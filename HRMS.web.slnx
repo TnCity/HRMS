@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="HRMS.BLL/HRMS.BLL.csproj" />
+  <Project Path="HRMS.DAL/HRMS.DAL.csproj" />
+  <Project Path="HRMS.Entities/HRMS.Entities.csproj" />
+  <Project Path="HRMS.web/HRMS.web.csproj" />
+</Solution>

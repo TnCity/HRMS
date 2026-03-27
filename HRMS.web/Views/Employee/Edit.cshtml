@@ -1,0 +1,96 @@
+﻿@model HRMS.Entities.Employee
+
+<div class="container mt-5">
+    <div class="card p-4 shadow">
+        <h3>Edit Employee</h3>
+
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+
+            <input type="hidden" asp-for="EmployeeId" />
+
+            <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+            <div class="mb-3">
+                <label>Name</label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label>Email</label>
+                <!-- ✅ fixed -->
+                <input asp-for="Email" type="email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label>Phone</label>
+                <input asp-for="Phone" class="form-control" />
+                <span asp-validation-for="Phone" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label>Role</label>
+                <input asp-for="Role" class="form-control" />
+            </div>
+
+            <!-- Department -->
+            <div class="mb-3">
+                <label>Department</label>
+                <select asp-for="DepartmentId"
+                        asp-items="@(ViewBag.Departments as SelectList)"
+                        class="form-select">
+                    <option value="">-- Select Department --</option>
+                </select>
+                <span asp-validation-for="DepartmentId" class="text-danger"></span>
+            </div>
+
+            <!-- Join Date -->
+            <div class="mb-3">
+                <label>Joining Date</label>
+                <input asp-for="JoinDate" type="date" class="form-control" />
+                <span asp-validation-for="JoinDate" class="text-danger"></span>
+            </div>
+
+            <!-- ✅ Show Existing Image -->
+            <div class="mb-3">
+                <label>Current Photo</label><br />
+                <img src="@Model.ProfileImagePath" width="80" class="rounded-circle" />
+            </div>
+
+            <!-- ✅ Upload New Image -->
+            <div class="mb-3">
+                <label>Change Photo</label>
+                <input type="file" name="ProfileImage" class="form-control" accept="image/*" />
+            </div>
+
+            <!-- ✅ Address -->
+            <div class="mb-3">
+                <label>Address</label>
+                <textarea asp-for="Address" class="form-control"></textarea>
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+
+            <!-- ✅ Salary -->
+            <div class="mb-3">
+                <label>Salary</label>
+                <input asp-for="Salary" type="number" class="form-control" />
+                <span asp-validation-for="Salary" class="text-danger"></span>
+            </div>
+
+            <!-- ✅ Designation -->
+            <div class="mb-3">
+                <label>Designation</label>
+                <input asp-for="Designation" class="form-control" />
+                <span asp-validation-for="Designation" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Update</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

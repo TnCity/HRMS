@@ -1,0 +1,35 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using HRMS.Entities;
+using Microsoft.EntityFrameworkCore;
+
+namespace HRMS.DAL
+{
+    public class HRMSDbContext : DbContext
+    {
+        public HRMSDbContext(DbContextOptions<HRMSDbContext> options)
+            : base(options)
+        {
+        }
+
+        public DbSet<Employee> Employees { get; set; }
+        public DbSet<Department> Departments { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Admin> Admins { get; set; }
+       
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            
+            modelBuilder.Entity<Department>().HasData(
+                new Department { DepartmentId = 1, DepartmentName = "HR" },
+                new Department { DepartmentId = 2, DepartmentName = "IT" },
+                new Department { DepartmentId = 3, DepartmentName = "Finance" }
+            );
+        }
+    }
+}
