@@ -24,7 +24,9 @@ namespace HRMS.DAL.Repositories
 
         public Employee GetById(int id)
         {
-            return _context.Employees.Find(id);
+            return _context.Employees
+                           .Include(e => e.Department)
+                           .FirstOrDefault(e => e.EmployeeId == id);
         }
 
         public void Add(Employee employee)

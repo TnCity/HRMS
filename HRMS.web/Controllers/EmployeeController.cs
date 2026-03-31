@@ -27,7 +27,7 @@ namespace HRMS.web.Controllers
             if (!IsAdminLoggedIn())
                 return RedirectToAction("Login", "Admin");
 
-            int pageSize = 6;
+            int pageSize = 5;
 
             // 🔍 Get all employees first
             var employees = _service.GetEmployees(); // no paging here
@@ -35,10 +35,12 @@ namespace HRMS.web.Controllers
             // 🔍 Apply search
             if (!string.IsNullOrEmpty(search))
             {
+                search = search.ToLower();
+
                 employees = employees.Where(e =>
-                    e.Name.Contains(search) ||
-                    e.Email.Contains(search) ||
-                    (e.Role != null && e.Role.Contains(search))
+                    e.Name.ToLower().Contains(search) ||
+                    e.Email.ToLower().Contains(search) ||
+                    (e.Role != null && e.Role.ToLower().Contains(search))
                 ).ToList();
             }
 
@@ -104,7 +106,21 @@ namespace HRMS.web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        //  --------------------------Edit Employee-----------------------------
+        // ----------------- Details Employee ---------------
+
+        public IActionResult Details(int id)
+        {
+            var emp = _service.GetEmployeeById(id);
+            if(emp == null)
+            {
+                return NotFound();
+                
+            }
+            return View(emp);
+        }
+
+
+        //  -------------------------- Edit Employee-----------------------------
 
         public IActionResult Edit(int id)
         {
@@ -160,6 +176,8 @@ namespace HRMS.web.Controllers
             var emp = _service.GetEmployeeById(id);
             return View(emp);
         }
+
+
         [HttpPost, ActionName("Delete")]
         public IActionResult DeleteConfirmed(int id)
         {

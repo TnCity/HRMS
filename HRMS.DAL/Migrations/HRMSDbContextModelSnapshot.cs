@@ -43,6 +43,31 @@ namespace HRMS.DAL.Migrations
                     b.ToTable("Admins");
                 });
 
+            modelBuilder.Entity("HRMS.Entities.Attendance", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.ToTable("Attendances");
+                });
+
             modelBuilder.Entity("HRMS.Entities.Department", b =>
                 {
                     b.Property<int>("DepartmentId")
@@ -52,29 +77,11 @@ namespace HRMS.DAL.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DepartmentId"));
 
                     b.Property<string>("DepartmentName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("DepartmentId");
 
                     b.ToTable("Departments");
-
-                    b.HasData(
-                        new
-                        {
-                            DepartmentId = 1,
-                            DepartmentName = "HR"
-                        },
-                        new
-                        {
-                            DepartmentId = 2,
-                            DepartmentName = "IT"
-                        },
-                        new
-                        {
-                            DepartmentId = 3,
-                            DepartmentName = "Finance"
-                        });
                 });
 
             modelBuilder.Entity("HRMS.Entities.Employee", b =>
@@ -155,6 +162,17 @@ namespace HRMS.DAL.Migrations
                     b.HasIndex("EmployeeId");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("HRMS.Entities.Attendance", b =>
+                {
+                    b.HasOne("HRMS.Entities.Employee", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
                 });
 
             modelBuilder.Entity("HRMS.Entities.Employee", b =>

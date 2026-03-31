@@ -19,17 +19,8 @@ namespace HRMS.DAL
         public DbSet<Department> Departments { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Admin> Admins { get; set; }
-       
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
+        public DbSet<Attendance> Attendances { get; set; }
 
-            
-            modelBuilder.Entity<Department>().HasData(
-                new Department { DepartmentId = 1, DepartmentName = "HR" },
-                new Department { DepartmentId = 2, DepartmentName = "IT" },
-                new Department { DepartmentId = 3, DepartmentName = "Finance" }
-            );
-        }
+
     }
 }

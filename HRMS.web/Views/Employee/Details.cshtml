@@ -1,0 +1,64 @@
+﻿@model HRMS.Entities.Employee
+
+<div class="container mt-5">
+    <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-body p-5">
+
+            <div class="row">
+
+                <!-- Left: Profile Image -->
+                <div class="col-md-4 text-center">
+                    <img src="@(string.IsNullOrEmpty(Model.ProfileImagePath)
+                                                                         ? Url.Content("~/images/default.png")
+                                                                         : Url.Content(Model.ProfileImagePath))"
+                         class="img-fluid rounded shadow border"
+                         style="height:450px; width:100%; object-fit:cover;" />
+                </div>
+
+                <!-- Right: Details -->
+                <div class="col-md-8">
+
+                    <h2 class="fw-bold">@Model.Name</h2>
+                    <hr />
+
+                    <p><strong>Email:</strong> @Model.Email</p>
+                    <p><strong>Phone:</strong> @Model.Phone</p>
+
+                    <p>
+                        <strong>Department:</strong>
+                        @(Model.Department != null ? Model.Department.DepartmentName : "N/A")
+                    </p>
+
+                    <p><strong>Role:</strong> @Model.Role</p>
+
+                    <p>
+                        <strong>Joining Date:</strong>
+                        @Model.JoinDate.ToString("dd-MM-yyyy")
+                    </p>
+
+                    <p><strong>Address:</strong> @Model.Address</p>
+                    <p><strong>Designation:</strong> @Model.Designation</p>
+
+                    <p>
+                        <strong>Salary:</strong>
+                        ₹@Model.Salary.ToString("N2")
+                    </p>
+
+                    <div class="mt-4">
+                        <a asp-action="Edit" asp-route-id="@Model.EmployeeId"
+                               class="btn btn-primary px-4">
+                            Edit
+                        </a>
+
+                        <a asp-action="Index" class="btn btn-secondary ms-2">
+                            Back
+                        </a>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>

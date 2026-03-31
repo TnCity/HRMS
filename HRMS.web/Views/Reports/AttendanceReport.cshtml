@@ -1,0 +1,51 @@
+﻿@{
+    ViewData["Title"] = "Attendance Report";
+
+    var dates = Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.Dates);
+    var present = Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.Present);
+    var absent = Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.Absent);
+}
+
+<div class="container mt-5">
+
+    <h2 class="text-center mb-4 fw-bold">Attendance Report</h2>
+
+    <div class="card shadow-lg p-4 rounded-4">
+        <canvas id="attendanceChart"></canvas>
+    </div>
+
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    var ctx = document.getElementById('attendanceChart').getContext('2d');
+
+    var chart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+    labels: @Html.Raw(dates),
+    datasets: [
+    {
+    label: 'Present',
+    data: @Html.Raw(present),
+    backgroundColor: 'green'
+    },
+    {
+    label: 'Absent',
+    data: @Html.Raw(absent),
+    backgroundColor: 'red'
+    }
+    ]
+    },
+    options: {
+    responsive: true,
+    plugins: {
+    legend: {
+    position: 'top'
+    }
+    }
+    }
+    });
+</script>

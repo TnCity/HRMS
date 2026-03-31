@@ -1,0 +1,52 @@
+﻿@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<div class="container mt-5">
+
+    <!-- Welcome -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">Admin Dashboard</h2>
+        <h6 class="text-success">
+            Welcome, @Context.Session.GetString("Admin")
+        </h6>
+    </div>
+
+    <!-- Cards -->
+    <div class="row g-4">
+
+        <!-- Employees -->
+        <div class="col-md-4">
+            <div class="card shadow-lg border-0 rounded-4 text-center p-4">
+                <h4 class="fw-semibold">Employees</h4>
+                <p class="text-muted">Manage all employees</p>
+                <a asp-controller="Employee" asp-action="Index" class="btn btn-primary rounded-pill">
+                    Go to Employees
+                </a>
+            </div>
+        </div>
+
+        <!-- Departments -->
+        <div class="col-md-4">
+            <div class="card shadow-lg border-0 rounded-4 text-center p-4">
+                <h4 class="fw-semibold">Departments</h4>
+                <p class="text-muted">Manage departments</p>
+                <a asp-controller="Department" asp-action="Index" class="btn btn-primary rounded-pill">
+                    Manage Departments
+                </a>
+            </div>
+        </div>
+
+        <!-- Reports -->
+        <div class="col-md-4">
+            <div class="card shadow-lg border-0 rounded-4 text-center p-4">
+                <h4 class="fw-semibold">Reports</h4>
+                <p class="text-muted">View attendance reports</p>
+                <a asp-controller="Reports" asp-action="AttendanceReport" class="btn btn-primary rounded-pill">
+                    Manage All Report
+                </a>
+            </div>
+        </div>
+
+    </div>
+</div>
