@@ -47,5 +47,9 @@ namespace HRMS.BLL.Services
         {
             _repo.Delete(id);
         }
+        public Employee Login(string email, string password)
+        {
+            return _repo.GetByEmailAndPassword(email, password);
+        }
     }
 }

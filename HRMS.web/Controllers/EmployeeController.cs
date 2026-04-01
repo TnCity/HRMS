@@ -2,13 +2,16 @@
 using HRMS.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using HRMS.web.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 
 namespace HRMS.web.Controllers
 {
     public class EmployeeController : Controller
     {
         private readonly EmployeeService _service;
+
 
         public EmployeeController(EmployeeService service)
         {
@@ -66,7 +69,7 @@ namespace HRMS.web.Controllers
             var departments = _service.GetDepartments();
             ViewBag.Departments = new SelectList(departments, "DepartmentId", "DepartmentName");
 
-           return View();
+            return View();
         }
 
         [HttpPost]
@@ -98,7 +101,7 @@ namespace HRMS.web.Controllers
 
                 emp.ProfileImagePath = "/images/" + fileName;
             }
-            
+
 
             _service.AddEmployee(emp);
 
@@ -111,10 +114,10 @@ namespace HRMS.web.Controllers
         public IActionResult Details(int id)
         {
             var emp = _service.GetEmployeeById(id);
-            if(emp == null)
+            if (emp == null)
             {
                 return NotFound();
-                
+
             }
             return View(emp);
         }
@@ -185,5 +188,95 @@ namespace HRMS.web.Controllers
             return RedirectToAction("Index");
         }
 
+
+
+        // ------------------------- Login Employee ----------------------------
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Login(LoginVM model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var user = _service.Login(model.Email, model.Password);
+
+            if (user != null)
+            {
+                // First-time login check
+                if (user.IsFirstLogin)
+                {
+                    return RedirectToAction("ChangePassword", new { id = user.EmployeeId });
+                }
+
+                // Store session
+                HttpContext.Session.SetInt32("EmployeeId", user.EmployeeId);
+                HttpContext.Session.SetString("EmployeeName", user.Name);
+
+                return RedirectToAction("Dashboard", "Employee");
+            }
+
+            ModelState.AddModelError("", "Invalid email or password");
+            return View(model);
+        }
+
+        // ----------------------------Employee Logout:-----------------------------
+
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction("Index", "Home");
+
+        }
+
+        // -------------------------Employee Change Password ----------------------------
+        public IActionResult ChangePassword(int Id)
+        {
+            var model = new ChangePasswordVM
+            {
+                EmployeeId = Id
+            };
+            return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult ChangePassword(ChangePasswordVM model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+            var emp = _service.GetEmployeeById(model.EmployeeId);
+            if (emp == null)
+            {
+                return NotFound();
+            }
+            emp.Password = model.NewPassword;
+            emp.IsFirstLogin = false;
+            _service.UpdateEmployee(emp);
+            TempData["success"] = "Password changed successfully! Please log in with your new password.";
+            return RedirectToAction("Login");
+
+        }
+
+        //------------------------ Employee Dashboard.--------------------------
+        public IActionResult Dashboard()
+        {
+            var empId = HttpContext.Session.GetInt32("EmployeeId");
+
+            if (empId == null)
+            {
+                return RedirectToAction("Login");
+            }
+
+            var emp = _service.GetEmployeeById(empId.Value);
+
+            return View(emp);
+        }
     }
 }

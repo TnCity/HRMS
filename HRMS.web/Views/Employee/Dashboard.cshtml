@@ -1,0 +1,59 @@
+﻿@model HRMS.Entities.Employee
+
+@{
+    ViewData["Title"] = "Employee Dashboard";
+}
+
+<div class="container mt-4">
+
+    <h2 class="mb-4">Welcome, @Model.Name </h2>
+
+    <div class="row">
+
+        <!-- Profile Card -->
+        <div class="col-md-4">
+            <div class="card shadow p-3 text-center">
+                <img src="@Model.ProfileImagePath"
+                     class="rounded mb-3 d-block mx-auto"
+                     width="120" height="120" />
+
+                <h5>@Model.Name</h5>
+                <p>@Model.Designation</p>
+                <p class="text-muted">@Model.Email</p>
+            </div>
+        </div>
+
+        <!-- Info Card -->
+        <div class="col-md-4">
+            <div class="card shadow p-3">
+                <h5>Employee Info</h5>
+                <hr />
+                <p><strong>Department:</strong> @Model.Department?.DepartmentName</p>
+                <p><strong>Phone:</strong> @Model.Phone</p>
+                <p><strong>Join Date:</strong> @Model.JoinDate.ToShortDateString()</p>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="col-md-4">
+            <div class="card shadow p-3">
+                <h5>Quick Actions</h5>
+                <hr />
+
+                <a href="/Leave/Apply" class="btn btn-primary w-100 mb-2">
+                    Apply Leave
+                </a>
+
+                <a href="/Leave/MyLeaves" class="btn btn-info w-100 mb-2">
+                    My Leaves
+                </a>
+
+                <a href="/Employee/ChangePassword?id=@Model.EmployeeId" class="btn btn-warning w-100">
+                    Change Password
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+</div>

@@ -61,5 +61,10 @@ namespace HRMS.DAL.Repositories
                 _context.SaveChanges();
             }
         }
+        public Employee GetByEmailAndPassword(string email, string password)
+        {
+            return _context.Employees
+    .FirstOrDefault(x => x.Email == email && x.Password != null && x.Password == password);
+        }
     }
 }

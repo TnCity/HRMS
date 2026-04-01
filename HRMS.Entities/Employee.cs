@@ -1,8 +1,5 @@
 ﻿
 
-
-
-
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
@@ -16,11 +13,14 @@ namespace HRMS.Entities
         public string Name { get; set; }
 
         [Required]
-        [EmailAddress] // ✅ important
+        [EmailAddress] 
         public string Email { get; set; }
+        
+        public string? Password { get; set; }
+        public bool IsFirstLogin { get; set; } = true;
 
         [Required]
-        [Phone] // ✅ better validation
+        [Phone]  
         public string Phone { get; set; }
 
         [Required(ErrorMessage = "Please select a department")]
@@ -29,18 +29,18 @@ namespace HRMS.Entities
         [ValidateNever]
         public Department? Department { get; set; }
 
-        public string? Role { get; set; } // ✅ nullable (optional)
+        public string? Role { get; set; } 
 
         [Required]
         public DateTime JoinDate { get; set; }
 
         public string? ProfileImagePath { get; set; }
 
-        [Required] // ✅ important
+        [Required] 
         public string Address { get; set; }
 
         [Required]
-        [Range(1000, 1000000)] // ✅ validation
+        [Range(1000, 1000000)] 
         public decimal Salary { get; set; }
 
         [Required]
