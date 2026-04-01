@@ -1,48 +1,5 @@
 ﻿
 
-//using System.ComponentModel.DataAnnotations;
-//using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-
-//namespace HRMS.Entities
-//{
-//    public class Employee
-//    {
-//        public int EmployeeId { get; set; }
-
-//        [Required]
-//        public string Name { get; set; }
-
-//        [Required]
-//        public string Email { get; set; }
-
-//        [Required]
-//        public string Phone { get; set; }
-
-//        // ✅ FIXED
-//        [Required(ErrorMessage = "Please select a department")]
-//        public int? DepartmentId { get; set; }
-
-//        // ✅ Prevent validation issue
-//        [ValidateNever]
-//        public Department? Department { get; set; }
-
-//        public string Role { get; set; }
-
-//        [Required]
-//        public DateTime JoinDate { get; set; }
-
-//        public string? ProfileImagePath { get; set; }
-
-//        public string Address { get; set; }
-
-//        public decimal Salary { get; set; }
-
-//        public string Designation { get; set; }
-//    }
-//}
-
-
-
 
 
 

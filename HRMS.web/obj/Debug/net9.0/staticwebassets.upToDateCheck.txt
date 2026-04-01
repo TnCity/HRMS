@@ -62,10 +62,17 @@ C:\Users\Administrator\source\repos\HRMS.web\HRMS.web\wwwroot\lib\bootstrap\dist
 C:\Users\Administrator\source\repos\HRMS.web\HRMS.web\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.min.css.map
 wwwroot\css\site.css
 wwwroot\favicon.ico
+wwwroot\images\0e320fd8-6401-4879-863d-cf19deaf3d9a.jfif
+wwwroot\images\20987cc5-4912-485c-8d94-eea7b3399a99.jfif
+wwwroot\images\3f3d6139-640f-4f27-be07-8bbd6b7e0d93.jpg
 wwwroot\images\5c7ea858-9b38-469f-a7ac-c3b51c7fadad.jfif
 wwwroot\images\69e52d53-3c3a-4218-8b52-2a76fefc8da2.jpg
 wwwroot\images\6c401123-323e-4eca-8a23-3378f38889e4.jpg
+wwwroot\images\b7cf0507-78c2-432a-a4d2-f45353ef7b80.avif
+wwwroot\images\e43406f4-bc2e-461b-b531-ac23507bfa0c.jpg
 wwwroot\images\e79a4563-3c73-44a7-8b1d-e5095673ccf7.png
+wwwroot\images\e7d96194-6e98-41a5-90b6-f2f2bc025dbb.jpg
+wwwroot\images\f6a41745-79f8-43e7-8004-edc2dbb521f7.avif
 wwwroot\js\site.js
 wwwroot\lib\bootstrap\LICENSE
 wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css

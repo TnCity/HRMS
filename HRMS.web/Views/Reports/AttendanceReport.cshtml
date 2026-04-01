@@ -1,51 +1,184 @@
-﻿@{
+﻿@* @{
     ViewData["Title"] = "Attendance Report";
-
-    var dates = Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.Dates);
-    var present = Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.Present);
-    var absent = Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.Absent);
 }
 
-<div class="container mt-5">
+<div class="container mt-4">
 
-    <h2 class="text-center mb-4 fw-bold">Attendance Report</h2>
+    <h3>Attendance Report</h3>
 
-    <div class="card shadow-lg p-4 rounded-4">
-        <canvas id="attendanceChart"></canvas>
+    <!-- Employee Dropdown -->
+    <div class="mb-3">
+        <label>Select Employee</label>
+        <select id="empDropdown" class="form-control">
+            <option value="">-- Select Employee --</option>
+            @foreach (var emp in ViewBag.Employees)
+            {
+                <option value="@emp.Id">@emp.Name (@emp.Id)</option>
+            }
+        </select>
+    </div>
+
+    <!-- Chart -->
+    <canvas id="attendanceChart" height="100"></canvas>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    let chart;
+
+    document.getElementById("empDropdown").addEventListener("change", function () {
+    let empId = this.value;
+
+    if (!empId) return;
+
+    fetch(`/Reports/GetEmployeeAttendance?empId=${empId}`)
+    .then(res => res.json())
+    .then(data => {
+
+    let labels = data.map(x => x.date);
+    let values = data.map(x => x.status);
+
+    if (chart) chart.destroy();
+
+    let ctx = document.getElementById('attendanceChart').getContext('2d');
+
+    chart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+    labels: labels,
+    datasets: [{
+    label: 'Attendance',
+    data: values
+    }]
+    },
+    options: {
+    scales: {
+    y: {
+    beginAtZero: true,
+    ticks: {
+    stepSize: 1,
+    callback: function (value) {
+    return value === 1 ? 'Present' : 'Absent';
+    }
+    }
+    }
+    }
+    }
+    });
+    });
+    });
+</script> *@
+
+
+
+
+
+
+
+@{
+    ViewData["Title"] = "Attendance Report";
+}
+
+<div class="container mt-4">
+
+    <h3 class="mb-3">📊 Attendance Report</h3>
+
+    <!-- Dropdown -->
+    <div class="mb-4 w-50">
+        <label class="form-label fw-semibold">Select Employee</label>
+        <select id="empDropdown" class="form-select">
+            <option value="">-- Select Employee --</option>
+            @foreach (var emp in ViewBag.Employees)
+            {
+                <option value="@emp.Id">@emp.Name (@emp.Id)</option>
+            }
+        </select>
+    </div>
+
+    <!-- Summary -->
+    <div id="summary" class="mb-3 fw-bold"></div>
+
+    <!-- Chart -->
+    <div class="card shadow-sm p-3">
+        <canvas id="attendanceChart" height="100"></canvas>
     </div>
 
 </div>
 
-<!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-    var ctx = document.getElementById('attendanceChart').getContext('2d');
+    let chart;
 
-    var chart = new Chart(ctx, {
+    document.getElementById("empDropdown").addEventListener("change", function () {
+    let empId = this.value;
+
+    if (!empId) return;
+
+    fetch(`/Reports/GetEmployeeAttendance?empId=${empId}`)
+    .then(res => res.json())
+    .then(data => {
+
+    if (!data || data.length === 0) {
+    document.getElementById("summary").innerHTML = "❌ No attendance data found";
+    return;
+    }
+
+    let labels = data.map(x => x.date);
+    let values = data.map(x => x.status);
+
+    // 📊 Summary Calculation
+    let present = values.filter(v => v === 1).length;
+    let total = values.length;
+    let percent = ((present / total) * 100).toFixed(1);
+
+    document.getElementById("summary").innerHTML =
+    `✅ Present: ${present} / ${total} days (${percent}%)`;
+
+    if (chart) chart.destroy();
+
+    let ctx = document.getElementById('attendanceChart').getContext('2d');
+
+    chart = new Chart(ctx, {
     type: 'bar',
     data: {
-    labels: @Html.Raw(dates),
-    datasets: [
-    {
-    label: 'Present',
-    data: @Html.Raw(present),
-    backgroundColor: 'green'
-    },
-    {
-    label: 'Absent',
-    data: @Html.Raw(absent),
-    backgroundColor: 'red'
-    }
-    ]
+    labels: labels,
+    datasets: [{
+    label: 'Attendance',
+    data: values,
+    backgroundColor: values.map(v => v === 1 ? '#28a745' : '#dc3545'),
+    borderRadius: 5
+    }]
     },
     options: {
     responsive: true,
     plugins: {
     legend: {
-    position: 'top'
+    display: false
+    },
+    tooltip: {
+    callbacks: {
+    label: function (context) {
+    return context.raw === 1 ? 'Present' : 'Absent';
     }
     }
     }
+    },
+    scales: {
+    y: {
+    beginAtZero: true,
+    ticks: {
+    stepSize: 1,
+    callback: function (value) {
+    return value === 1 ? 'Present' : 'Absent';
+    }
+    }
+    }
+    }
+    }
+    });
+    });
     });
 </script>
