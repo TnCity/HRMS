@@ -1,0 +1,38 @@
+﻿@model IEnumerable<HRMS.Entities.LeaveRequest>
+
+<h3>Manage Leave Requests</h3>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Employee</th>
+            <th>From</th>
+            <th>To</th>
+            <th>Type</th>
+            <th>Reason</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Employee.Name</td>
+                <td>@item.FromDate.ToString("dd/MM/yyyy")</td>
+                <td>@item.ToDate.ToString("dd/MM/yyyy")</td>
+                <td>@item.LeaveType</td>
+                <td>@item.Reason</td>
+                <td>@item.Status</td>
+                <td>
+                    @if (item.Status == "Pending")
+                    {
+                        <a asp-action="Approve" asp-route-id="@item.Id" class="btn btn-success btn-sm">Approve</a>
+                        <a asp-action="Reject" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Reject</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,63 @@
+﻿@model HRMS.Entities.LeaveRequest
+
+@{
+    ViewData["Title"] = "Apply Leave";
+}
+
+<div style="background-color:cadetblue; min-height:100vh; padding-top:40px;">
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+
+                <div class="card shadow-lg border-0 rounded-3">
+                    <div class="card-body p-4">
+
+                        <h3 class="text-center mb-4 text-primary">Apply Leave</h3>
+
+                        <div class="text-danger mb-3">
+                            @Html.ValidationSummary()
+                        </div>
+
+                        <form asp-action="Apply" method="post">
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">From Date</label>
+                                <input asp-for="FromDate" type="date" class="form-control" />
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">To Date</label>
+                                <input asp-for="ToDate" type="date" class="form-control" />
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Leave Type</label>
+                                <select asp-for="LeaveType"
+                                        asp-items="Html.GetEnumSelectList<HRMS.Entities.LeaveType>()"
+                                        class="form-select">
+                                    <option value="">-- Select Leave Type --</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Reason</label>
+                                <textarea asp-for="Reason" class="form-control" rows="3"></textarea>
+                            </div>
+
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">
+                                    Apply Leave
+                                </button>
+                            </div>
+
+                        </form>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
