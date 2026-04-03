@@ -1,7 +1,4 @@
-﻿
-
-
-using HRMS.DAL;
+﻿using HRMS.DAL;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -41,12 +38,16 @@ namespace HRMS.web.Controllers
         {
             var data = _context.Attendances
                 .Where(a => a.EmployeeId == empId)
-                .OrderBy(a => a.Date)
-                .Select(a => new
+                .AsEnumerable()
+                .GroupBy(a => a.Date.Date)
+                .Select(g => new
                 {
-                    date = a.Date.ToString("dd-MM"),
-                    status = a.Status == "Present" ? 1 : 0
+                    date = g.Key.ToString("dd MMM"),
+                    present = g.Count(x => x.Status == "Present"),
+                    absent = g.Count(x => x.Status == "Absent"),
+                    leave = g.Count(x => x.Status == "Leave")
                 })
+                .OrderBy(x => x.date)
                 .ToList();
 
             return Json(data);

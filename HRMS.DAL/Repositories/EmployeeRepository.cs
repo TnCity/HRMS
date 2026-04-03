@@ -40,15 +40,23 @@ namespace HRMS.DAL.Repositories
         }
         public void Update(Employee employee)
         {
-            var tracked = _context.Employees.Local
+            var existing = _context.Employees
                 .FirstOrDefault(e => e.EmployeeId == employee.EmployeeId);
 
-            if (tracked != null)
+            if (existing != null)
             {
-                _context.Entry(tracked).State = EntityState.Detached;
+                existing.Name = employee.Name;
+                existing.Email = employee.Email;
+                existing.DepartmentId = employee.DepartmentId;
+                existing.Salary = employee.Salary;
+
+                // Preserve password
+                if (!string.IsNullOrEmpty(employee.Password))
+                {
+                    existing.Password = employee.Password;
+                }
             }
 
-            _context.Employees.Update(employee);
             _context.SaveChanges();
         }
 

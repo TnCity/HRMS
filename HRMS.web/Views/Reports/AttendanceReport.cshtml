@@ -1,92 +1,15 @@
-﻿@* @{
-    ViewData["Title"] = "Attendance Report";
-}
-
-<div class="container mt-4">
-
-    <h3>Attendance Report</h3>
-
-    <!-- Employee Dropdown -->
-    <div class="mb-3">
-        <label>Select Employee</label>
-        <select id="empDropdown" class="form-control">
-            <option value="">-- Select Employee --</option>
-            @foreach (var emp in ViewBag.Employees)
-            {
-                <option value="@emp.Id">@emp.Name (@emp.Id)</option>
-            }
-        </select>
-    </div>
-
-    <!-- Chart -->
-    <canvas id="attendanceChart" height="100"></canvas>
-
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<script>
-    let chart;
-
-    document.getElementById("empDropdown").addEventListener("change", function () {
-    let empId = this.value;
-
-    if (!empId) return;
-
-    fetch(`/Reports/GetEmployeeAttendance?empId=${empId}`)
-    .then(res => res.json())
-    .then(data => {
-
-    let labels = data.map(x => x.date);
-    let values = data.map(x => x.status);
-
-    if (chart) chart.destroy();
-
-    let ctx = document.getElementById('attendanceChart').getContext('2d');
-
-    chart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-    labels: labels,
-    datasets: [{
-    label: 'Attendance',
-    data: values
-    }]
-    },
-    options: {
-    scales: {
-    y: {
-    beginAtZero: true,
-    ticks: {
-    stepSize: 1,
-    callback: function (value) {
-    return value === 1 ? 'Present' : 'Absent';
-    }
-    }
-    }
-    }
-    }
-    });
-    });
-    });
-</script> *@
-
-
-
-
-
-
+﻿
 
 @{
     ViewData["Title"] = "Attendance Report";
 }
 
-<div class="container mt-4">
+<div class="container-fluid mt-4 p-4" style="background-color:#f4f6f9; min-height:100vh;">
 
     <h3 class="mb-3">📊 Attendance Report</h3>
 
     <!-- Dropdown -->
-    <div class="mb-4 w-50">
+    <div class="mb-4 w-25">
         <label class="form-label fw-semibold">Select Employee</label>
         <select id="empDropdown" class="form-select">
             <option value="">-- Select Employee --</option>
@@ -97,88 +20,199 @@
         </select>
     </div>
 
-    <!-- Summary -->
-    <div id="summary" class="mb-3 fw-bold"></div>
+    <div class="row">
 
-    <!-- Chart -->
-    <div class="card shadow-sm p-3">
-        <canvas id="attendanceChart" height="100"></canvas>
+        <!-- LEFT PANEL -->
+        <div class="col-md-3 col-lg-2">
+            <div class="card shadow-sm h-100 border-0" style="background:#ffffff;">
+                <div class="card-header text-white"
+                     style="background: linear-gradient(45deg, #0f75d4, #6c757d);">
+                    <h6 class="mb-0">Summary</h6>
+                </div>
+                <div class="card-body p-3">
+                    <div id="summary"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT PANEL -->
+        <div class="col-md-9 col-lg-10">
+            <div class="card shadow-sm border-0" style="background:#ffffff;">
+                <div class="card-header text-white"
+                     style="background: linear-gradient(45deg, #007bff, #00c6ff);">
+                    <h5 class="mb-0">Attendance Trend</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="attendanceChart" height="120"></canvas>
+                </div>
+            </div>
+        </div>
+
     </div>
-
 </div>
 
+<!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
     let chart;
 
     document.getElementById("empDropdown").addEventListener("change", function () {
-    let empId = this.value;
 
-    if (!empId) return;
+        let empId = this.value;
+        if (!empId) return;
 
-    fetch(`/Reports/GetEmployeeAttendance?empId=${empId}`)
-    .then(res => res.json())
-    .then(data => {
+        fetch(`/Reports/GetEmployeeAttendance?empId=${empId}`)
+            .then(res => res.json())
+            .then(data => {
 
-    if (!data || data.length === 0) {
-    document.getElementById("summary").innerHTML = "❌ No attendance data found";
-    return;
-    }
+                if (!data || data.length === 0) {
+                    document.getElementById("summary").innerHTML = "❌ No attendance data found";
+                    return;
+                }
 
-    let labels = data.map(x => x.date);
-    let values = data.map(x => x.status);
+                let labels = data.map(x => x.date);
 
-    // 📊 Summary Calculation
-    let present = values.filter(v => v === 1).length;
-    let total = values.length;
-    let percent = ((present / total) * 100).toFixed(1);
+                // Totals
+                let totalPresent = data.reduce((a, b) => a + b.present, 0);
+                let totalAbsent = data.reduce((a, b) => a + b.absent, 0);
+                let totalLeave = data.reduce((a, b) => a + b.leave, 0);
+                let totalDays = totalPresent + totalAbsent + totalLeave;
 
-    document.getElementById("summary").innerHTML =
-    `✅ Present: ${present} / ${total} days (${percent}%)`;
+                let percent = totalDays === 0 ? 0 : ((totalPresent / totalDays) * 100).toFixed(1);
 
-    if (chart) chart.destroy();
+                // Attendance trend
+                let attendanceTrend = data.map(x => {
+                    let total = x.present + x.absent + x.leave;
+                    return total === 0 ? 0 : (x.present / total) * 100;
+                });
 
-    let ctx = document.getElementById('attendanceChart').getContext('2d');
+                // Status badge logic
+                let status = percent >= 90 ? "Excellent"
+                           : percent >= 75 ? "Good"
+                           : "Poor";
 
-    chart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-    labels: labels,
-    datasets: [{
-    label: 'Attendance',
-    data: values,
-    backgroundColor: values.map(v => v === 1 ? '#28a745' : '#dc3545'),
-    borderRadius: 5
-    }]
-    },
-    options: {
-    responsive: true,
-    plugins: {
-    legend: {
-    display: false
-    },
-    tooltip: {
-    callbacks: {
-    label: function (context) {
-    return context.raw === 1 ? 'Present' : 'Absent';
-    }
-    }
-    }
-    },
-    scales: {
-    y: {
-    beginAtZero: true,
-    ticks: {
-    stepSize: 1,
-    callback: function (value) {
-    return value === 1 ? 'Present' : 'Absent';
-    }
-    }
-    }
-    }
-    }
-    });
-    });
+                let statusColor = percent >= 90 ? "success"
+                                : percent >= 75 ? "warning"
+                                : "danger";
+
+                // Summary UI
+                document.getElementById("summary").innerHTML = `
+                    <div class="mb-2 p-2 rounded bg-success text-white">✅ Present: ${totalPresent}</div>
+                    <div class="mb-2 p-2 rounded bg-danger text-white">❌ Absent: ${totalAbsent}</div>
+                    <div class="mb-2 p-2 rounded bg-warning text-dark">🟡 Leave: ${totalLeave}</div>
+
+                    <hr/>
+
+                    <label class="fw-semibold">Attendance</label>
+                    <div class="progress mb-2">
+                        <div class="progress-bar bg-primary" style="width:${percent}%">
+                            ${percent}%
+                        </div>
+                    </div>
+
+                    <p><strong>Total Days:</strong> ${totalDays}</p>
+
+                    <span class="badge bg-${statusColor}">${status}</span>
+
+                    <p class="text-muted mt-2">
+                        📌 ${totalAbsent} absences recorded this month.
+                    </p>
+                `;
+
+                if (chart) chart.destroy();
+
+                let ctx = document.getElementById('attendanceChart').getContext('2d');
+
+                let gradient = ctx.createLinearGradient(0, 0, 0, 400);
+                gradient.addColorStop(0, "rgba(0,123,255,0.6)");
+                gradient.addColorStop(1, "rgba(0,123,255,0.05)");
+
+                chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Attendance %',
+                                data: attendanceTrend,
+                                borderColor: '#007bff',
+                                backgroundColor: gradient,
+                                fill: true,
+                                tension: 0.4,
+                                pointRadius: 2
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        interaction: {
+                            mode: 'index',
+                            intersect: false
+                        },
+                        plugins: {
+                            legend: {
+                                display: true,
+                                labels: {
+                                    usePointStyle: true,
+                                    padding: 15
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        return context.dataset.label + ": " + context.raw.toFixed(1) + "%";
+                                    }
+                                }
+                            }
+                        },
+                        elements: {
+                            line: {
+                                borderWidth: 2
+                            },
+                            point: {
+                                radius: 2,
+                                hoverRadius: 5
+                            }
+                        },
+                        animation: {
+                            duration: 1000,
+                            easing: 'easeInOutQuart'
+                        },
+                        scales: {
+                            x: {
+                                ticks: {
+                                    maxTicksLimit: 8,
+                                    callback: function (value) {
+                                        let label = this.getLabelForValue(value);
+                                        return label.split(" ")[0];
+                                    }
+                                },
+                                grid: {
+                                    display: false
+                                }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                max: 100,
+                                ticks: {
+                                    stepSize: 20,
+                                    callback: function (value) {
+                                        return value + "%";
+                                    }
+                                },
+                                grid: {
+                                    color: "#eaeaea"
+                                },
+                                title: {
+                                    display: true,
+                                    text: "Attendance %"
+                                }
+                            }
+                        }
+                    }
+                });
+
+            });
     });
 </script>
