@@ -1,0 +1,85 @@
+﻿@model List<HRMS.Entities.Performance>
+
+<div class="container">
+
+    <h3 class="mb-4">👤 Individual Performance Report</h3>
+
+    <!-- 🔹 DROPDOWN -->
+    <form method="get" class="row mb-4">
+        <div class="col-md-4">
+            <select name="empId" class="form-select" onchange="this.form.submit()">
+                <option value="">-- Select Employee --</option>
+
+                @foreach (var emp in ViewBag.Employees)
+                {
+                    <option value="@emp.Id">@emp.Name</option>
+                }
+            </select>
+        </div>
+    </form>
+
+    @if (Model.Any())
+    {
+        <!-- 🔹 TABLE -->
+        <table class="table table-bordered shadow-sm">
+            <thead class="table-dark">
+                <tr>
+                    <th>Date</th>
+                    <th>Tasks</th>
+                    <th>Leaves</th>
+                    <th>Score</th>
+                    <th>Rating</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    string badge = item.Status == "Good" ? "success"
+                                 : item.Status == "Average" ? "warning"
+                                 : "danger";
+
+                    <tr>
+                        <td>@item.Date.ToShortDateString()</td>
+                        <td>@item.TasksCompleted</td>
+                        <td>@item.LeavesTaken</td>
+                        <td>@item.ProductivityScore</td>
+                        <td>@item.Rating ⭐</td>
+                        <td><span class="badge bg-@badge">@item.Status</span></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <!-- 🔹 CHART -->
+        <canvas id="empChart"></canvas>
+    }
+    else
+    {
+        <div class="alert alert-info">Select an employee to view performance</div>
+    }
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+@if (Model.Any())
+{
+    <script>
+        var labels = @Html.Raw(Json.Serialize(Model.Select(x => x.Date.ToString("dd MMM"))));
+        var ratings = @Html.Raw(Json.Serialize(Model.Select(x => x.Rating)));
+
+        new Chart(document.getElementById('empChart'), {
+        type: 'line',
+        data: {
+        labels: labels,
+        datasets: [{
+        label: 'Performance Trend',
+        data: ratings,
+        fill: false
+        }]
+        }
+        });
+    </script>
+}

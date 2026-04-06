@@ -114,8 +114,16 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVwb3J0c1xBdHRlbmRhbmNlUmVwb3J0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/Administrator/source/repos/HRMS.web/HRMS.web/Views/Reports/IndividualPerformance.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVwb3J0c1xJbmRpdmlkdWFsUGVyZm9ybWFuY2UuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/Administrator/source/repos/HRMS.web/HRMS.web/Views/Reports/ManageReports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVwb3J0c1xNYW5hZ2VSZXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Administrator/source/repos/HRMS.web/HRMS.web/Views/Reports/PerformanceReport.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVwb3J0c1xQZXJmb3JtYW5jZVJlcG9ydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/Administrator/source/repos/HRMS.web/HRMS.web/Views/Shared/Error.cshtml]

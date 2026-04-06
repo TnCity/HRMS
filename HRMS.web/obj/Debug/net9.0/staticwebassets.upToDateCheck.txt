@@ -63,6 +63,7 @@ C:\Users\Administrator\source\repos\HRMS.web\HRMS.web\wwwroot\lib\bootstrap\dist
 wwwroot\css\site.css
 wwwroot\favicon.ico
 wwwroot\images\0e320fd8-6401-4879-863d-cf19deaf3d9a.jfif
+wwwroot\images\13871637-088e-4140-bf87-90a7eff3b234.jpg
 wwwroot\images\20987cc5-4912-485c-8d94-eea7b3399a99.jfif
 wwwroot\images\3f3d6139-640f-4f27-be07-8bbd6b7e0d93.jpg
 wwwroot\images\5c7ea858-9b38-469f-a7ac-c3b51c7fadad.jfif
