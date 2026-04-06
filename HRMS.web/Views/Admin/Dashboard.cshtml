@@ -1,4 +1,4 @@
-﻿@{
+﻿@* @{
     ViewData["Title"] = "Admin Dashboard";
 }
 
@@ -43,8 +43,7 @@
                        class="btn btn-primary w-100 rounded-3">
                     Manage All Report
                 </a> 
-                @* <a href="/Reports/ManageReports" class="nav-link btn btn-primary w-100 rounded-3">
-                    Manage Reports</a> *@
+                
             </div>
         </div>
 
@@ -53,6 +52,116 @@
                 <h4 class="fw-semibold">Manage Leave</h4>
                 <p class="text-muted">Manage Leave</p>
                 <a href="/Leave/Manage" class="btn btn-primary">
+                    Manage Leave Requests
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+
+ *@
+
+
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
+<style>
+    body {
+        background: linear-gradient(135deg, #eef2f7, #f8fbff);
+    }
+
+    .dashboard-title {
+        font-weight: 700;
+    }
+
+    .card {
+        border: none;
+        border-radius: 18px;
+        transition: all 0.3s ease;
+    }
+
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+        }
+
+        .card i {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+    .btn-custom {
+        border-radius: 25px;
+        font-weight: 500;
+        padding: 8px 18px;
+    }
+</style>
+
+<div class="container mt-5">
+
+    <!-- Title -->
+    <div class="text-center mb-5">
+        <h2 class="dashboard-title">📊 Admin Dashboard</h2>
+        <p class="text-muted">Manage your HR system efficiently</p>
+    </div>
+
+    <!-- Cards -->
+    <div class="row g-4 justify-content-center">
+
+        <!-- Employees -->
+        <div class="col-md-4">
+            <div class="card shadow-sm text-center p-4 h-100" style="background:#f0f7ff;">
+                <i class="bi bi-people-fill text-primary"></i>
+                <h4 class="fw-semibold">Employees</h4>
+                <p class="text-muted">Manage all employees</p>
+                <a asp-controller="Employee" asp-action="Index"
+                       class="btn btn-primary btn-custom w-100">
+                    Go to Employees
+                </a>
+            </div>
+        </div>
+
+        <!-- Departments -->
+        <div class="col-md-4">
+            <div class="card shadow-sm text-center p-4 h-100" style="background:#f0fff4;">
+                <i class="bi bi-building text-success"></i>
+                <h4 class="fw-semibold">Departments</h4>
+                <p class="text-muted">Manage departments</p>
+                <a asp-controller="Department" asp-action="Index"
+                       class="btn btn-success btn-custom w-100">
+                    Manage Departments
+                </a>
+            </div>
+        </div>
+
+        <!-- Reports -->
+        <div class="col-md-4">
+            <div class="card shadow-sm text-center p-4 h-100" style="background:#f5f0ff;">
+                <i class="bi bi-bar-chart-fill text-purple"></i>
+                <h4 class="fw-semibold">Reports</h4>
+                <p class="text-muted">View attendance reports</p>
+                <a asp-controller="Reports" asp-action="ManageReports"
+                       class="btn btn-dark btn-custom w-100">
+                    Manage Reports
+                </a>
+            </div>
+        </div>
+
+        <!-- Leave -->
+        <div class="col-md-4">
+            <div class="card shadow-sm text-center p-4 h-100" style="background:#fff7f0;">
+                <i class="bi bi-calendar-check-fill text-warning"></i>
+                <h4 class="fw-semibold">Manage Leave</h4>
+                <p class="text-muted">Handle leave requests</p>
+                <a href="/Leave/Manage"
+                       class="btn btn-warning btn-custom w-100">
                     Manage Leave Requests
                 </a>
             </div>

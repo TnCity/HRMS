@@ -3,131 +3,160 @@
 
 
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] HRMS</title>
+    <title>@ViewData["Title"] - HRMS</title>
 
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/HRMS.web.styles.css" asp-append-version="true" />
+
+    <!-- Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+            .sidebar {
+                width: 240px;
+                min-height: 100vh;
+            }
+
+                .sidebar .nav-link {
+                    border-radius: 8px;
+                    padding: 10px;
+                    transition: 0.3s;
+                }
+
+                    .sidebar .nav-link:hover {
+                        background: rgba(255,255,255,0.1);
+                    }
+    </style>
+
+
+
 </head>
 
 <body>
+
+    <!-- TOP NAVBAR -->
     <header>
-        <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow">
             <div class="container-fluid">
 
                 <!-- LOGO -->
                 <a class="navbar-brand fw-bold text-primary"
                        asp-controller="@(Context.Session.GetString("Admin") != null ? "Admin"
-                                                                           : Context.Session.GetInt32("EmployeeId") != null ? "Employee"
-                                                                           : "Home")"
+                                                                                 : Context.Session.GetInt32("EmployeeId") != null ? "Employee"
+                                                                                 : "Home")"
                        asp-action="@(Context.Session.GetString("Admin") != null ? "Dashboard"
-                                                                       : Context.Session.GetInt32("EmployeeId") != null ? "Dashboard"
-                                                                       : "Index")">
-                    HRMS
+                                                                                 : Context.Session.GetInt32("EmployeeId") != null ? "Dashboard"
+                                                                                 : "Index")">
+                    <img src="~/images/logo.png" alt="logo" style="width:40px; height:auto;" />
                 </a>
 
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                        data-bs-target=".navbar-collapse">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+                <!-- RIGHT SIDE -->
+                <div class="ms-auto">
 
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    @if (Context.Session.GetString("Admin") == null && Context.Session.GetInt32("EmployeeId") == null)
+                    {
+                        <!-- NOT LOGGED IN -->
+                        <a class="btn btn-outline-primary me-2" asp-controller="Admin" asp-action="Login">
+                            HR (Admin)
+                        </a>
 
-                    <!-- LEFT SIDE (Navigation only) -->
-                    <ul class="navbar-nav flex-grow-1">
+                        <a class="btn btn-primary" asp-controller="Employee" asp-action="Login">
+                            Employee
+                        </a>
+                    }
+                    else if (Context.Session.GetString("Admin") != null)
+                    {
+                        <!-- ADMIN -->
+                        <span class="me-3 fw-semibold text-success">
+                            Welcome, @Context.Session.GetString("Admin")
+                        </span>
 
-                        @if (Context.Session.GetString("Admin") != null)
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Admin" asp-action="Dashboard">Home</a>
-                            </li>
-                        }
-                        else if (Context.Session.GetInt32("EmployeeId") != null)
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Employee" asp-action="Dashboard">Home</a>
-                            </li>
-                        }
-                        else
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Home</a>
-                            </li>
-                        }
+                        <a class="btn btn-danger" asp-controller="Admin" asp-action="Logout">
+                            Logout
+                        </a>
+                    }
+                    else if (Context.Session.GetInt32("EmployeeId") != null)
+                    {
+                        <!-- EMPLOYEE -->
+                        <span class="me-3 fw-semibold text-primary">
+                            Welcome, @Context.Session.GetString("EmployeeName")
+                        </span>
 
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-
-                    </ul>
-
-                    <!-- RIGHT SIDE (Login / Logout) -->
-                    <ul class="navbar-nav ms-auto">
-
-                        @if (Context.Session.GetString("Admin") == null && Context.Session.GetInt32("EmployeeId") == null)
-                        {
-                            <!-- Not Logged In -->
-                            <li class="nav-item">
-                                <a class="btn btn-outline-primary me-2" asp-controller="Admin" asp-action="Login">
-                                    HR (Admin)
-                                </a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="btn btn-primary" asp-controller="Employee" asp-action="Login">
-                                    Employee
-                                </a>
-                            </li>
-                        }
-                        else if (Context.Session.GetString("Admin") != null)
-                        {
-                            <!-- Admin -->
-                            <li class="nav-item">
-                                <span class="me-3 fw-semibold text-success">
-                                    Welcome, @Context.Session.GetString("Admin")
-                                </span>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="btn btn-danger" asp-controller="Admin" asp-action="Logout">
-                                    Logout
-                                </a>
-                            </li>
-                        }
-                        else if (Context.Session.GetInt32("EmployeeId") != null)
-                        {
-                            <!-- Employee -->
-                            <li class="nav-item">
-                                <span class="me-3 fw-semibold text-primary">
-                                    Welcome, @Context.Session.GetString("EmployeeName")
-                                </span>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="btn btn-danger" asp-controller="Employee" asp-action="Logout">
-                                    Logout
-                                </a>
-                            </li>
-                        }
-
-                    </ul>
+                        <a class="btn btn-danger" asp-controller="Employee" asp-action="Logout">
+                            Logout
+                        </a>
+                    }
 
                 </div>
+
             </div>
         </nav>
     </header>
 
-    <!-- BODY -->
-    <div class="container">
-        <main role="main" class="pb-3">
+    <!-- MAIN LAYOUT -->
+    <div class="d-flex">
+
+        <!-- SIDEBAR (ONLY FOR ADMIN) -->
+        @if (Context.Session.GetString("Admin") != null
+                 && !Context.Request.Path.Value.Contains("/Admin/Login"))
+        {
+            <div class="sidebar bg-dark text-white p-3">
+
+                <h5 class="text-center mb-4">Admin Panel</h5>
+
+                <ul class="nav flex-column">
+
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="/Admin/Dashboard">
+                            <i class="bi bi-speedometer2"></i> Dashboard
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="/Employee/Index">
+                            <i class="bi bi-people"></i> Employees
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="/Department/Index">
+                            <i class="bi bi-building"></i> Departments
+                        </a>
+                    </li>
+
+                    <!-- REPORT DROPDOWN -->
+                    <li class="nav-item">
+                        <a class="nav-link text-white" data-bs-toggle="collapse" href="#reportsMenu">
+                            <i class="bi bi-bar-chart"></i> Reports
+                        </a>
+
+                        <div class="collapse ps-3" id="reportsMenu">
+                            <a class="nav-link text-white" href="/Reports/AttendanceReport">Attendance Report</a>
+                            <a class="nav-link text-white" href="/Reports/ManageReports">All Reports</a>
+                        </div>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="/Leave/Manage">
+                            <i class="bi bi-calendar-check"></i> Leave
+                        </a>
+                    </li>
+
+                </ul>
+            </div>
+        }
+
+        <!-- PAGE CONTENT -->
+        <div class="flex-grow-1 p-4">
             @RenderBody()
-        </main>
+        </div>
+
     </div>
 
     <!-- FOOTER -->
@@ -137,10 +166,11 @@
         </div>
     </footer>
 
+    <!-- SCRIPTS -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
+
 </body>
 </html>
