@@ -1,4 +1,4 @@
-﻿@model List<HRMS.Entities.Performance>
+﻿@model List<HRMS.web.Models.PerformanceVM>
 
 <div class="container">
 
@@ -73,7 +73,7 @@
                                      : "danger";
 
                         <tr>
-                            <td class="fw-semibold">@item.Employee.Name</td>
+                            <td class="fw-semibold">@item.EmployeeName</td>
                             <td>@item.TasksCompleted</td>
                             <td>@item.LeavesTaken</td>
                             <td>@item.ProductivityScore</td>

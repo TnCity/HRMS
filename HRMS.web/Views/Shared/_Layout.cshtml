@@ -137,15 +137,37 @@
                         </a>
 
                         <div class="collapse ps-3" id="reportsMenu">
-                            <a class="nav-link text-white" href="/Reports/AttendanceReport">Attendance Report</a>
-                            <a class="nav-link text-white" href="/Reports/PerformanceReport">Performance Report</a>
-                            <a class="nav-link text-white" href="/Reports/ManageReports">All Reports</a>
+    
+                            <a class="nav-link text-white" href="/Reports/AttendanceReport">
+                                Attendance Report
+                            </a>
+
+                            <!-- Performance Report with Submenu -->
+                            <a class="nav-link text-white" data-bs-toggle="collapse" href="#performanceSubMenu" role="button" aria-expanded="false">
+                                Performance Report
+                            </a>
+    
+                            <div class="collapse ps-3" id="performanceSubMenu">
+                                <a class="nav-link text-white" href="/Reports/IndividualPerformance">
+                                    Individual Report
+                                </a>
+                            </div>
+
+                            <a class="nav-link text-white" href="/Reports/ManageReports">
+                                All Reports
+                            </a>
+
                         </div>
                     </li>
 
                     <li class="nav-item">
                         <a class="nav-link text-white" href="/Leave/Manage">
                             <i class="bi bi-calendar-check"></i> Leave
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="/Task/AddTask">
+                            <i class="bi bi-calendar-check"></i> Task
                         </a>
                     </li>
 

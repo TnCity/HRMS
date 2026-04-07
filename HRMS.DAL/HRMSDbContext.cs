@@ -22,6 +22,9 @@ namespace HRMS.DAL
         public DbSet<Attendance> Attendances { get; set; }
         public DbSet<LeaveRequest> LeaveRequests { get; set; }
         public DbSet<Performance> Performances { get; set; }
+        public DbSet<MonthlyPerformance> MonthlyPerformances { get; set; }
+        public DbSet<TaskItem> Tasks { get; set; }
+
 
 
     }
