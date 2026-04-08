@@ -1,0 +1,91 @@
+﻿@{
+    ViewData["Title"] = "Generate Payroll";
+}
+
+<div class="container mt-4">
+    <div class="card shadow-lg rounded-4 p-4">
+
+        <h3 class="mb-4 text-success">📊 Generate Payroll</h3>
+
+        <form method="post">
+
+            <div class="row">
+
+                <!-- Employee Dropdown -->
+                <div class="col-md-4 mb-3">
+                    <label class="form-label fw-semibold">Employee</label>
+                    <select name="employeeId" class="form-select" required>
+                        <option value="">-- Select Employee --</option>
+                        @foreach (var emp in ViewBag.Employees)
+                        {
+                            <option value="@emp.Value">@emp.Text</option>
+                        }
+                    </select>
+                </div>
+
+                <!-- Month -->
+                <div class="col-md-4 mb-3">
+                    <label class="form-label fw-semibold">Month</label>
+                    <input type="number" name="month" value="@ViewBag.Month" class="form-control" />
+                </div>
+
+                <!-- Year -->
+                <div class="col-md-4 mb-3">
+                    <label class="form-label fw-semibold">Year</label>
+                    <input type="number" name="year" value="@ViewBag.Year" class="form-control" />
+                </div>
+
+            </div>
+
+            <div class="text-end mt-3">
+                <button type="submit" class="btn btn-success px-4">
+                    ⚙️ Generate Payroll
+                </button>
+            </div>
+
+        </form>
+
+        <!-- 🔥 RESULT DISPLAY -->
+        @if (ViewBag.Result != null)
+        {
+            var r = ViewBag.Result;
+
+            <div class="mt-5">
+                <h5 class="text-primary">💼 Payroll Summary</h5>
+
+                <table class="table table-bordered mt-3">
+                    <tr><th>Employee ID</th><td>@r.EmployeeId</td></tr>
+                    <tr><th>Month</th><td>@r.Month / @r.Year</td></tr>
+                    <tr><th>Present Days</th><td>@r.PresentDays</td></tr>
+                    <tr><th>Absent Days</th><td>@r.AbsentDays</td></tr>
+                    <tr><th>Gross Salary</th><td>₹ @r.GrossSalary</td></tr>
+                    <tr><th>Deductions</th><td>₹ @r.TotalDeductions</td></tr>
+                    <tr class="table-success">
+                        <th>Net Salary</th>
+                        <td><strong>₹ @r.NetSalary</strong></td>
+                    </tr>
+                </table>
+            </div>
+        }
+
+        <!-- ERROR -->
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger mt-3">
+                @ViewBag.Error
+            </div>
+        }
+
+    </div>
+</div>
+
+<style>
+    body {
+        background-color: #f4f6f9;
+    }
+
+    .card {
+        background: linear-gradient(135deg, #ffffff, #eef2f7);
+        border: none;
+    }
+</style>

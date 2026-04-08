@@ -1,0 +1,113 @@
+﻿@model SalaryVM
+
+<div class="container mt-4">
+    <div class="card shadow-lg rounded-4 p-4">
+
+        <h3 class="mb-4 text-primary">💰 Add Salary Structure</h3>
+
+        <form asp-action="Create" method="post">
+
+            <!-- Validation Summary -->
+            <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+            <!-- Employee Dropdown -->
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Select Employee</label>
+
+                <select asp-for="Salary.EmployeeId"
+                        asp-items="Model.Employees"
+                        class="form-select"
+                        onchange="loadSalary(this.value)">
+                    <option value="">-- Select Employee --</option>
+                </select>
+
+                <span asp-validation-for="Salary.EmployeeId" class="text-danger"></span>
+            </div>
+
+            <!-- Salary Fields -->
+            <div class="row">
+
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Basic Salary</label>
+                    <input asp-for="Salary.BasicSalary" id="basicSalary" class="form-control" />
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">HRA</label>
+                    <input asp-for="Salary.HRA" class="form-control" />
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">DA</label>
+                    <input asp-for="Salary.DA" class="form-control" />
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Other Allowances</label>
+                    <input asp-for="Salary.OtherAllowances" class="form-control" />
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">PF</label>
+                    <input asp-for="Salary.PF" class="form-control" />
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Tax</label>
+                    <input asp-for="Salary.Tax" class="form-control" />
+                </div>
+
+            </div>
+
+            <!-- Submit Button -->
+            <div class="text-end mt-3">
+                <button type="submit" class="btn btn-success px-4">
+                    💾 Save Salary
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+<!-- JS for Auto-Fill -->
+<script>
+    function loadSalary(empId) {
+        if (!empId) {
+            document.getElementById("basicSalary").value = '';
+            return;
+        }
+
+        fetch('@Url.Action("GetEmployeeSalary", "Salary")?id=' + empId)
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById("basicSalary").value = data.salary;
+            })
+            .catch(err => console.error("Error:", err));
+    }
+</script>
+
+<!-- Styling -->
+<style>
+    body {
+        background-color: #f4f6f9;
+    }
+
+    .card {
+        background: linear-gradient(135deg, #ffffff, #eef2f7);
+        border: none;
+    }
+
+    label {
+        font-weight: 500;
+    }
+
+    .form-control, .form-select {
+        border-radius: 10px;
+    }
+
+    .btn-success {
+        border-radius: 10px;
+    }
+</style>

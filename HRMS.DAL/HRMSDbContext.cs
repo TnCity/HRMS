@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using HRMS.Entities;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace HRMS.DAL
@@ -24,8 +25,25 @@ namespace HRMS.DAL
         public DbSet<Performance> Performances { get; set; }
         public DbSet<MonthlyPerformance> MonthlyPerformances { get; set; }
         public DbSet<TaskItem> Tasks { get; set; }
+        public DbSet<SalaryStructure> SalaryStructures { get; set; }
+        public DbSet<Payroll> Payrolls { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<SalaryStructure>()
+                .HasOne(s => s.Employee)
+                .WithMany()
+                .HasForeignKey(s => s.EmployeeId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Payroll>()
+                .HasOne(p => p.Employee)
+                .WithMany()
+                .HasForeignKey(p => p.EmployeeId)
+                .OnDelete(DeleteBehavior.Cascade);
+        }
 
     }
 }
