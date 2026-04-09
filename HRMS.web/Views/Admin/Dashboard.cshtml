@@ -1,8 +1,5 @@
 ﻿
 
-
-
-
 @{
     ViewData["Title"] = "Admin Dashboard";
 }
@@ -25,19 +22,23 @@
     }
 
         .card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.12);
         }
 
         .card i {
-            font-size: 40px;
-            margin-bottom: 10px;
+            font-size: 42px;
+            margin-bottom: 12px;
         }
 
     .btn-custom {
         border-radius: 25px;
         font-weight: 500;
-        padding: 8px 18px;
+        padding: 10px;
+    }
+
+    .text-purple {
+        color: #6f42c1;
     }
 </style>
 
@@ -57,10 +58,10 @@
             <div class="card shadow-sm text-center p-4 h-100" style="background:#f0f7ff;">
                 <i class="bi bi-people-fill text-primary"></i>
                 <h4 class="fw-semibold">Employees</h4>
-                <p class="text-muted">Manage all employees</p>
+                <p class="text-muted">Manage all employee records</p>
                 <a asp-controller="Employee" asp-action="Index"
                        class="btn btn-primary btn-custom w-100">
-                    Go to Employees
+                    View Employees
                 </a>
             </div>
         </div>
@@ -70,10 +71,10 @@
             <div class="card shadow-sm text-center p-4 h-100" style="background:#f0fff4;">
                 <i class="bi bi-building text-success"></i>
                 <h4 class="fw-semibold">Departments</h4>
-                <p class="text-muted">Manage departments</p>
+                <p class="text-muted">Manage company departments</p>
                 <a asp-controller="Department" asp-action="Index"
                        class="btn btn-success btn-custom w-100">
-                    Manage Departments
+                    View Departments
                 </a>
             </div>
         </div>
@@ -83,10 +84,10 @@
             <div class="card shadow-sm text-center p-4 h-100" style="background:#f5f0ff;">
                 <i class="bi bi-bar-chart-fill text-purple"></i>
                 <h4 class="fw-semibold">Reports</h4>
-                <p class="text-muted">View attendance reports</p>
+                <p class="text-muted">View attendance & analytics</p>
                 <a asp-controller="Reports" asp-action="ManageReports"
                        class="btn btn-dark btn-custom w-100">
-                    Manage Reports
+                    View Reports
                 </a>
             </div>
         </div>
@@ -95,11 +96,24 @@
         <div class="col-md-4">
             <div class="card shadow-sm text-center p-4 h-100" style="background:#fff7f0;">
                 <i class="bi bi-calendar-check-fill text-warning"></i>
-                <h4 class="fw-semibold">Manage Leave</h4>
-                <p class="text-muted">Handle leave requests</p>
+                <h4 class="fw-semibold">Leave Management</h4>
+                <p class="text-muted">Handle employee leave requests</p>
                 <a href="/Leave/Manage"
                        class="btn btn-warning btn-custom w-100">
-                    Manage Leave Requests
+                    Manage Leave
+                </a>
+            </div>
+        </div>
+
+        <!-- Salary -->
+        <div class="col-md-4">
+            <div class="card shadow-sm text-center p-4 h-100" style="background:#fef6ff;">
+                <i class="bi bi-currency-rupee text-success"></i>
+                <h4 class="fw-semibold">Salary Management</h4>
+                <p class="text-muted">Update and manage salaries</p>
+                <a href="/Salary/Create"
+                       class="btn btn-success btn-custom w-100">
+                    Manage Salary
                 </a>
             </div>
         </div>

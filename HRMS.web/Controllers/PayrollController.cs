@@ -12,10 +12,18 @@ public class PayrollController : Controller
     {
         _context = context;
     }
+    private bool IsAdminLoggedIn()
+    {
+        return HttpContext.Session.GetString("Admin") != null;
+    }
 
     // 🔹 Generate Payroll Page
     public IActionResult Generate()
     {
+        if(!IsAdminLoggedIn()) {
+            return RedirectToAction("Login", "Admin");
+        }
+
         ViewBag.Employees = _context.Employees
             .Select(e => new SelectListItem
             {
@@ -33,6 +41,9 @@ public class PayrollController : Controller
     [HttpPost]
     public async Task<IActionResult> Generate(int employeeId, int month, int year)
     {
+        if(!IsAdminLoggedIn()) {
+            return RedirectToAction("Login", "Admin");
+        }
         ViewBag.Employees = _context.Employees
             .Select(e => new SelectListItem
             {
