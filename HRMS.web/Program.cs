@@ -5,6 +5,7 @@ using HRMS.BLL.Services;
 using HRMS.DAL;
 using HRMS.DAL.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Rotativa.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,6 +41,9 @@ builder.Services.AddAuthorization();
 
 
 var app = builder.Build(); // ✅ MUST come before app.Use...
+
+RotativaConfiguration.Setup(app.Environment.WebRootPath, "Rotativa");
+
 
 // Middleware
 if (!app.Environment.IsDevelopment())

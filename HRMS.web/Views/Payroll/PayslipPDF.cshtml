@@ -1,0 +1,155 @@
+﻿@model HRMS.Entities.Payroll
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Payslip</title>
+
+    <style>
+            body {
+                font-family: Arial;
+                padding: 30px;
+            }
+
+            h2, h3 {
+                text-align: center;
+                margin: 5px;
+            }
+
+            .header {
+                text-align: center;
+                border-bottom: 2px solid black;
+                margin-bottom: 20px;
+            }
+
+            .section {
+                margin-top: 20px;
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 10px;
+            }
+
+            table, th, td {
+                border: 1px solid black;
+            }
+
+            th, td {
+                padding: 8px;
+            }
+
+            th {
+                background-color: #f2f2f2;
+            }
+
+            .net {
+                background-color: #d4edda;
+                font-weight: bold;
+                font-size: 16px;
+            }
+
+            .flex {
+                display: flex;
+                justify-content: space-between;
+            }
+
+            .footer {
+                margin-top: 40px;
+            }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <div class="header">
+        <h2>HRMS Pvt Ltd</h2>
+        <h3>Salary Payslip</h3>
+        <p>Month: @Model.Month / @Model.Year</p>
+    </div>
+
+    <!-- EMPLOYEE DETAILS -->
+    <div class="section">
+        <table>
+            <tr>
+                <th>Employee Name</th>
+                <td>@Model.Employee?.Name</td>
+                <th>Employee ID</th>
+                <td>@Model.EmployeeId</td>
+            </tr>
+            <tr>
+                <th>Working Days</th>
+                <td>@Model.TotalDays</td>
+                <th>Present Days</th>
+                <td>@Model.PresentDays</td>
+            </tr>
+            <tr>
+                <th>Absent Days</th>
+                <td>@Model.AbsentDays</td>
+                <th>Pay Month</th>
+                <td>@Model.Month / @Model.Year</td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- SALARY BREAKDOWN -->
+    <div class="section">
+        <h3>Earnings & Deductions</h3>
+
+        <table>
+            <tr>
+                <th>Earnings</th>
+                <th>Amount (₹)</th>
+                <th>Deductions</th>
+                <th>Amount (₹)</th>
+            </tr>
+
+            <tr>
+                <td>Basic Salary</td>
+                <td>@Model.GrossSalary.ToString("0.00")</td>
+                <td>PF</td>
+                <td>--</td>
+            </tr>
+
+            <tr>
+                <td>Allowances</td>
+                <td>--</td>
+                <td>Tax</td>
+                <td>--</td>
+            </tr>
+
+            <tr>
+                <td><b>Total Earnings</b></td>
+                <td><b>@Model.GrossSalary.ToString("0.00")</b></td>
+                <td><b>Total Deductions</b></td>
+                <td><b>@Model.TotalDeductions.ToString("0.00")</b></td>
+            </tr>
+
+            <tr class="net">
+                <td colspan="2">Net Salary</td>
+                <td colspan="2">₹ @Model.NetSalary.ToString("0.00")</td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer flex">
+        <div>
+            <p>Generated on: @DateTime.Now.ToString("dd MMM yyyy")</p>
+        </div>
+
+        <div>
+            <p>Authorized Signature</p>
+            <br />
+            <p>___________________</p>
+        </div>
+    </div>
+
+</body>
+</html>

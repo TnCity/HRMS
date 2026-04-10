@@ -3,6 +3,7 @@ using HRMS.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Rotativa.AspNetCore;
 
 public class PayrollController : Controller
 {
@@ -12,24 +13,19 @@ public class PayrollController : Controller
     {
         _context = context;
     }
+
     private bool IsAdminLoggedIn()
     {
         return HttpContext.Session.GetString("Admin") != null;
     }
 
-    // 🔹 Generate Payroll Page
+    // 🔹 GET
     public IActionResult Generate()
     {
-        if(!IsAdminLoggedIn()) {
+        if (!IsAdminLoggedIn())
             return RedirectToAction("Login", "Admin");
-        }
 
-        ViewBag.Employees = _context.Employees
-            .Select(e => new SelectListItem
-            {
-                Value = e.EmployeeId.ToString(),
-                Text = e.Name
-            }).ToList();
+        LoadEmployees();
 
         ViewBag.Month = DateTime.Now.Month;
         ViewBag.Year = DateTime.Now.Year;
@@ -37,20 +33,18 @@ public class PayrollController : Controller
         return View();
     }
 
-    // 🔹 Generate Payroll Logic
+    // 🔹 POST
     [HttpPost]
     public async Task<IActionResult> Generate(int employeeId, int month, int year)
     {
-        if(!IsAdminLoggedIn()) {
+        if (!IsAdminLoggedIn())
             return RedirectToAction("Login", "Admin");
-        }
-        ViewBag.Employees = _context.Employees
-            .Select(e => new SelectListItem
-            {
-                Value = e.EmployeeId.ToString(),
-                Text = e.Name
-            }).ToList();
 
+        LoadEmployees();
+
+        int yearlyLeaveLimit = 15; // ✅ yearly allowed leave
+
+        // ✅ Salary
         var salary = await _context.SalaryStructures
             .FirstOrDefaultAsync(s => s.EmployeeId == employeeId);
 
@@ -60,28 +54,121 @@ public class PayrollController : Controller
             return View();
         }
 
+        // ✅ Attendance
         var attendance = await _context.Attendances
             .Where(a => a.EmployeeId == employeeId &&
                         a.Date.Month == month &&
                         a.Date.Year == year)
             .ToListAsync();
 
+        if (!attendance.Any())
+        {
+            ViewBag.Error = "No attendance found!";
+            return View();
+        }
+
+        // ✅ Date ranges
+        var monthStart = new DateTime(year, month, 1);
+        var monthEnd = new DateTime(year, month, DateTime.DaysInMonth(year, month));
+
+        var yearStart = new DateTime(year, 1, 1);
+        var yearEnd = new DateTime(year, 12, 31);
+
+        // ✅ Working Days
         int totalDays = DateTime.DaysInMonth(year, month);
-        int presentDays = attendance.Count(a => a.Status == "Present");
-        int absentDays = totalDays - presentDays;
 
-        var gross = salary.BasicSalary + salary.HRA + salary.DA + salary.OtherAllowances;
-        var perDay = gross / totalDays;
-        var earned = perDay * presentDays;
-        var deductions = salary.PF + salary.Tax + (absentDays * perDay);
-        var net = earned - deductions;
+        int workingDays = Enumerable.Range(1, totalDays)
+            .Select(d => new DateTime(year, month, d))
+            .Count(d => d.DayOfWeek != DayOfWeek.Saturday &&
+                        d.DayOfWeek != DayOfWeek.Sunday);
 
+        // ✅ Present Days
+        int presentDays = attendance.Count(a =>
+            a.Status.Trim().ToLower() == "present" &&
+            a.Date.DayOfWeek != DayOfWeek.Saturday &&
+            a.Date.DayOfWeek != DayOfWeek.Sunday);
+
+        // ✅ CURRENT MONTH LEAVES
+        var currentMonthLeaves = await _context.LeaveRequests
+            .Where(l => l.EmployeeId == employeeId &&
+                        l.Status == "Approved" &&
+                        l.FromDate <= monthEnd &&
+                        l.ToDate >= monthStart)
+            .ToListAsync();
+
+        int leaveDays = 0;
+
+        foreach (var leave in currentMonthLeaves)
+        {
+            var start = leave.FromDate < monthStart ? monthStart : leave.FromDate;
+            var end = leave.ToDate > monthEnd ? monthEnd : leave.ToDate;
+
+            for (var date = start; date <= end; date = date.AddDays(1))
+            {
+                if (date.DayOfWeek != DayOfWeek.Saturday &&
+                    date.DayOfWeek != DayOfWeek.Sunday)
+                {
+                    leaveDays++;
+                }
+            }
+        }
+
+        // ✅ TOTAL YEAR LEAVES
+        var allYearLeaves = await _context.LeaveRequests
+            .Where(l => l.EmployeeId == employeeId &&
+                        l.Status == "Approved" &&
+                        l.FromDate <= yearEnd &&
+                        l.ToDate >= yearStart)
+            .ToListAsync();
+
+        int totalLeaveTaken = 0;
+
+        foreach (var leave in allYearLeaves)
+        {
+            var start = leave.FromDate < yearStart ? yearStart : leave.FromDate;
+            var end = leave.ToDate > yearEnd ? yearEnd : leave.ToDate;
+
+            for (var date = start; date <= end; date = date.AddDays(1))
+            {
+                if (date.DayOfWeek != DayOfWeek.Saturday &&
+                    date.DayOfWeek != DayOfWeek.Sunday)
+                {
+                    totalLeaveTaken++;
+                }
+            }
+        }
+
+        // ✅ Paid vs Unpaid Leave
+        int remainingLeave = yearlyLeaveLimit - (totalLeaveTaken - leaveDays);
+        if (remainingLeave < 0) remainingLeave = 0;
+
+        int paidLeave = Math.Min(leaveDays, remainingLeave);
+        int unpaidLeave = leaveDays - paidLeave;
+
+        // ✅ Absent Days
+        int absentDays = workingDays - (presentDays + paidLeave);
+        if (absentDays < 0) absentDays = 0;
+
+        // ✅ Salary
+        var gross = Math.Round(
+            salary.BasicSalary + salary.HRA + salary.DA + salary.OtherAllowances, 2);
+
+        var perDay = Math.Round(gross / workingDays, 2);
+
+        var lossOfPay = Math.Round((absentDays + unpaidLeave) * perDay, 2);
+
+        var deductions = Math.Round(
+            salary.PF + salary.Tax + lossOfPay, 2);
+
+        var net = Math.Round(gross - deductions, 2);
+
+        // ✅ Save
         var payroll = new Payroll
         {
             EmployeeId = employeeId,
             Month = month,
             Year = year,
-            TotalDays = totalDays,
+            TotalDays = workingDays,
             PresentDays = presentDays,
             AbsentDays = absentDays,
             GrossSalary = gross,
@@ -92,9 +179,42 @@ public class PayrollController : Controller
         _context.Payrolls.Add(payroll);
         await _context.SaveChangesAsync();
 
-        // 🔥 send result to UI
+        payroll = await _context.Payrolls
+            .Include(p => p.Employee)
+            .FirstOrDefaultAsync(p => p.Id == payroll.Id);
+
         ViewBag.Result = payroll;
 
         return View();
     }
+
+    private void LoadEmployees()
+    {
+        ViewBag.Employees = _context.Employees
+            .Select(e => new SelectListItem
+            {
+                Value = e.EmployeeId.ToString(),
+                Text = e.Name
+            }).ToList();
+    }
+
+    public async Task<IActionResult> DownloadPayslip(int id)
+    {
+        var payroll = await _context.Payrolls
+            .Include(p => p.Employee)
+            .FirstOrDefaultAsync(p => p.Id == id);
+
+        if (payroll == null)
+            return NotFound();
+
+        return new ViewAsPdf("PayslipPDF", payroll)
+        {
+            FileName = $"Payslip_{payroll.Employee.Name}_{payroll.Month}_{payroll.Year}.pdf",
+            PageSize = Rotativa.AspNetCore.Options.Size.A4
+        };
+    }
 }
+
+
+
+

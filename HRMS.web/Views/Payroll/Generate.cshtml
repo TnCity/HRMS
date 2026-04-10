@@ -7,11 +7,27 @@
 
         <h3 class="mb-4 text-success">📊 Generate Payroll</h3>
 
+        <!-- 🔴 ERROR -->
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger">
+                @ViewBag.Error
+            </div>
+        }
+
+        <!-- 🟢 SUCCESS -->
+        @if (ViewBag.Success != null)
+        {
+            <div class="alert alert-success">
+                @ViewBag.Success
+            </div>
+        }
+
         <form method="post">
 
             <div class="row">
 
-                <!-- Employee Dropdown -->
+                <!-- Employee -->
                 <div class="col-md-4 mb-3">
                     <label class="form-label fw-semibold">Employee</label>
                     <select name="employeeId" class="form-select" required>
@@ -26,13 +42,13 @@
                 <!-- Month -->
                 <div class="col-md-4 mb-3">
                     <label class="form-label fw-semibold">Month</label>
-                    <input type="number" name="month" value="@ViewBag.Month" class="form-control" />
+                    <input type="number" name="month" value="@ViewBag.Month" class="form-control" min="1" max="12" required />
                 </div>
 
                 <!-- Year -->
                 <div class="col-md-4 mb-3">
                     <label class="form-label fw-semibold">Year</label>
-                    <input type="number" name="year" value="@ViewBag.Year" class="form-control" />
+                    <input type="number" name="year" value="@ViewBag.Year" class="form-control" min="2000" required />
                 </div>
 
             </div>
@@ -45,7 +61,7 @@
 
         </form>
 
-        <!-- 🔥 RESULT DISPLAY -->
+        <!-- 🔥 RESULT -->
         @if (ViewBag.Result != null)
         {
             var r = ViewBag.Result;
@@ -53,26 +69,49 @@
             <div class="mt-5">
                 <h5 class="text-primary">💼 Payroll Summary</h5>
 
-                <table class="table table-bordered mt-3">
-                    <tr><th>Employee ID</th><td>@r.EmployeeId</td></tr>
-                    <tr><th>Month</th><td>@r.Month / @r.Year</td></tr>
-                    <tr><th>Present Days</th><td>@r.PresentDays</td></tr>
-                    <tr><th>Absent Days</th><td>@r.AbsentDays</td></tr>
-                    <tr><th>Gross Salary</th><td>₹ @r.GrossSalary</td></tr>
-                    <tr><th>Deductions</th><td>₹ @r.TotalDeductions</td></tr>
+                <table class="table table-bordered mt-3 table-striped align-middle">
+                    <tr>
+                        <th>Employee</th>
+                        <td>@(r.Employee?.Name ?? r.EmployeeId)</td>
+                    </tr>
+                    <tr>
+                        <th>Month</th>
+                        <td>@r.Month / @r.Year</td>
+                    </tr>
+                    <tr>
+                        <th>Working Days</th>
+                        <td>@r.TotalDays</td>
+                    </tr>
+                    <tr>
+                        <th>Present Days</th>
+                        <td>@r.PresentDays</td>
+                    </tr>
+                    <tr>
+                        <th>Absent Days</th>
+                        <td>@r.AbsentDays</td>
+                    </tr>
+                    <tr>
+                        <th>Gross Salary</th>
+                        <td>₹ @r.GrossSalary.ToString("0.00")</td>
+                    </tr>
+                    <tr>
+                        <th>Deductions</th>
+                        <td>₹ @r.TotalDeductions.ToString("0.00")</td>
+                    </tr>
                     <tr class="table-success">
                         <th>Net Salary</th>
-                        <td><strong>₹ @r.NetSalary</strong></td>
+                        <td><strong>₹ @r.NetSalary.ToString("0.00")</strong></td>
                     </tr>
                 </table>
-            </div>
-        }
 
-        <!-- ERROR -->
-        @if (ViewBag.Error != null)
-        {
-            <div class="alert alert-danger mt-3">
-                @ViewBag.Error
+                <!-- 🚀 DOWNLOAD BUTTON (READY FOR PDF) -->
+                <div class="text-end">
+                    <a asp-action="DownloadPayslip"
+                           asp-route-id="@r.Id"
+                           class="btn btn-outline-primary">
+                        ⬇️ Download Payslip
+                    </a>
+                </div>
             </div>
         }
 
@@ -87,5 +126,10 @@
     .card {
         background: linear-gradient(135deg, #ffffff, #eef2f7);
         border: none;
+    }
+
+    table th {
+        width: 40%;
+        background-color: #f8f9fa;
     }
 </style>

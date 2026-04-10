@@ -77,6 +77,7 @@ C:\Users\Administrator\source\repos\HRMS.web\HRMS.web\bin\Debug\net9.0\NuGet.Pac
 C:\Users\Administrator\source\repos\HRMS.web\HRMS.web\bin\Debug\net9.0\NuGet.ProjectModel.dll
 C:\Users\Administrator\source\repos\HRMS.web\HRMS.web\bin\Debug\net9.0\NuGet.Protocol.dll
 C:\Users\Administrator\source\repos\HRMS.web\HRMS.web\bin\Debug\net9.0\NuGet.Versioning.dll
+C:\Users\Administrator\source\repos\HRMS.web\HRMS.web\bin\Debug\net9.0\Rotativa.AspNetCore.dll
 C:\Users\Administrator\source\repos\HRMS.web\HRMS.web\bin\Debug\net9.0\System.ClientModel.dll
 C:\Users\Administrator\source\repos\HRMS.web\HRMS.web\bin\Debug\net9.0\System.CodeDom.dll
 C:\Users\Administrator\source\repos\HRMS.web\HRMS.web\bin\Debug\net9.0\System.Composition.AttributedModel.dll
@@ -265,6 +266,7 @@ C:\Users\Administrator\source\repos\HRMS.web\HRMS.web\obj\Debug\net9.0\HRMS.web.
 C:\Users\Administrator\source\repos\HRMS.web\HRMS.web\obj\Debug\net9.0\HRMS.web.AssemblyInfoInputs.cache
 C:\Users\Administrator\source\repos\HRMS.web\HRMS.web\obj\Debug\net9.0\HRMS.web.AssemblyInfo.cs
 C:\Users\Administrator\source\repos\HRMS.web\HRMS.web\obj\Debug\net9.0\HRMS.web.csproj.CoreCompileInputs.cache
+C:\Users\Administrator\source\repos\HRMS.web\HRMS.web\obj\Debug\net9.0\HRMS.web.MvcApplicationPartsAssemblyInfo.cs
 C:\Users\Administrator\source\repos\HRMS.web\HRMS.web\obj\Debug\net9.0\HRMS.web.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\Administrator\source\repos\HRMS.web\HRMS.web\obj\Debug\net9.0\HRMS.web.RazorAssemblyInfo.cache
 C:\Users\Administrator\source\repos\HRMS.web\HRMS.web\obj\Debug\net9.0\HRMS.web.RazorAssemblyInfo.cs

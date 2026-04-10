@@ -60,6 +60,7 @@ C:\Users\Administrator\source\repos\HRMS.web\HRMS.web\wwwroot\lib\bootstrap\dist
 C:\Users\Administrator\source\repos\HRMS.web\HRMS.web\wwwroot\lib\bootstrap\dist\js\bootstrap.min.js
 C:\Users\Administrator\source\repos\HRMS.web\HRMS.web\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.min.css
 C:\Users\Administrator\source\repos\HRMS.web\HRMS.web\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.min.css.map
+wwwroot\Rotativa\wkhtmltopdf.exe
 wwwroot\css\site.css
 wwwroot\favicon.ico
 wwwroot\images\0e320fd8-6401-4879-863d-cf19deaf3d9a.jfif

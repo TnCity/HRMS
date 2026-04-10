@@ -13,7 +13,8 @@
           "HRMS.Entities": "1.0.0",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "9.0.14",
           "Microsoft.EntityFrameworkCore.Design": "9.0.14",
-          "Microsoft.VisualStudio.Web.CodeGeneration.Design": "9.0.12"
+          "Microsoft.VisualStudio.Web.CodeGeneration.Design": "9.0.12",
+          "Rotativa.AspNetCore": "1.4.0"
         },
         "runtime": {
           "HRMS.web.dll": {}
@@ -1891,6 +1892,14 @@
           }
         }
       },
+      "Rotativa.AspNetCore/1.4.0": {
+        "runtime": {
+          "lib/net8.0/Rotativa.AspNetCore.dll": {
+            "assemblyVersion": "1.4.0.0",
+            "fileVersion": "1.4.0.0"
+          }
+        }
+      },
       "System.ClientModel/1.0.0": {
         "dependencies": {
           "System.Memory.Data": "1.0.2"
@@ -2944,6 +2953,13 @@
       "sha512": "sha512-fJ6rFYANDnohFsdpaY79FvrJxI6murmoOxXz6nZlf819F48+IBKMnAIg3oIBRtZq5y498ObMtKnro5IitvizUg==",
       "path": "nuget.versioning/6.12.1",
       "hashPath": "nuget.versioning.6.12.1.nupkg.sha512"
+    },
+    "Rotativa.AspNetCore/1.4.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-zn0KgqCQqiTuNPYgeqrIJxXafjJUfDJBcUJIhAV5NgWSCX3DOEeg339zMJTbzcCyoJgGPL5LrG+IKZ3k8/Uk9Q==",
+      "path": "rotativa.aspnetcore/1.4.0",
+      "hashPath": "rotativa.aspnetcore.1.4.0.nupkg.sha512"
     },
     "System.ClientModel/1.0.0": {
       "type": "package",

@@ -93,6 +93,7 @@ namespace HRMS.web.Controllers
         {
             var leave = _context.LeaveRequests.Find(id);
 
+            
             if (leave != null)
             {
                 leave.Status = "Rejected";
