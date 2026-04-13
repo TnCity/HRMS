@@ -1,55 +1,112 @@
-﻿@model HRMS.Entities.Employee
+﻿
+
+
+@model HRMS.Entities.Employee
 
 @{
     ViewData["Title"] = "Employee Dashboard";
 }
+<style>
+    body {
+        background: linear-gradient(to right, #cbd7e7, #f8fbff);
+    }
+
+    .card {
+        border-radius: 12px;
+    }
+</style>
 
 <div class="container mt-4">
 
-    <h2 class="mb-4">Welcome, @Model.Name </h2>
+    <!-- 🔹 HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Welcome, @Model.Name 👋</h2>
+        <span class="badge bg-success p-2">Employee Panel</span>
+    </div>
 
-    <div class="row">
+    <!-- 🔹 QUICK STATS -->
+    <div class="row mb-4 text-center">
 
-        <!-- Profile Card -->
         <div class="col-md-4">
-            <div class="card shadow p-3 text-center">
-                <img src="@Model.ProfileImagePath"
-                     class="rounded mb-3 d-block mx-auto"
-                     width="120" height="120" />
-
-                <h5>@Model.Name</h5>
-                <p>@Model.Designation</p>
-                <p class="text-muted">@Model.Email</p>
+            <div class="card shadow-sm p-3">
+                <h6 class="text-muted">Department</h6>
+                <h5>@Model.Department?.DepartmentName</h5>
             </div>
         </div>
 
-        <!-- Info Card -->
         <div class="col-md-4">
-            <div class="card shadow p-3">
-                <h5>Employee Info</h5>
+            <div class="card shadow-sm p-3">
+                <h6 class="text-muted">Designation</h6>
+                <h5>@Model.Designation</h5>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm p-3">
+                <h6 class="text-muted">Joining Date</h6>
+                <h5>@Model.JoinDate.ToShortDateString()</h5>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row">
+
+        <!-- 🔹 PROFILE CARD -->
+        <div class="col-md-4">
+            <div class="card shadow-lg border-0 text-center p-4">
+                <img src="@Model.ProfileImagePath"
+                     class="rounded-circle mx-auto mb-3 border"
+                     width="120" height="120" />
+
+                <h5 class="fw-bold">@Model.Name</h5>
+                <p class="text-muted mb-1">@Model.Designation</p>
+                <small class="text-muted">@Model.Email</small>
+
                 <hr />
+
+                <p><strong>Phone:</strong> @Model.Phone</p>
+            </div>
+        </div>
+
+        <!-- 🔹 DETAILS CARD -->
+        <div class="col-md-4">
+            <div class="card shadow-lg border-0 p-4">
+                <h5 class="mb-3">Employee Details</h5>
+                <hr />
+
+                <p><strong>Employee ID:</strong> @Model.EmployeeId</p>
                 <p><strong>Department:</strong> @Model.Department?.DepartmentName</p>
+                <p><strong>Email:</strong> @Model.Email</p>
                 <p><strong>Phone:</strong> @Model.Phone</p>
                 <p><strong>Join Date:</strong> @Model.JoinDate.ToShortDateString()</p>
             </div>
         </div>
 
-        <!-- Actions -->
+        <!-- 🔹 QUICK ACTIONS -->
         <div class="col-md-4">
-            <div class="card shadow p-3">
-                <h5>Quick Actions</h5>
+            <div class="card shadow-lg border-0 p-4">
+                <h5 class="mb-3">Quick Actions</h5>
                 <hr />
 
                 <a href="/Leave/Apply" class="btn btn-primary w-100 mb-2">
-                    Apply Leave
+                    📝 Apply Leave
                 </a>
 
-                <a href="/Leave/MyLeaves" class="btn btn-info w-100 mb-2">
-                    My Leaves
+                <a href="/Leave/MyLeaves" class="btn btn-info w-100 mb-2 text-white">
+                    📋 My Leaves
+                </a>
+
+                <a href="/Payroll/MyPayslips" class="btn btn-success w-100 mb-2">
+                    💰 View Payslips
+                </a>
+
+                <a href="/Employee/MyAttendance" class="btn btn-secondary w-100 mb-2">
+                    📅 My Attendance
                 </a>
 
                 <a href="/Employee/ChangePassword?id=@Model.EmployeeId" class="btn btn-warning w-100">
-                    Change Password
+                    🔐 Change Password
                 </a>
             </div>
         </div>

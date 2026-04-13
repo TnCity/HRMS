@@ -1,8 +1,9 @@
 ﻿using HRMS.BLL.Services;
+using HRMS.DAL;
 using HRMS.Entities;
+using HRMS.web.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using HRMS.web.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 
@@ -12,10 +13,11 @@ namespace HRMS.web.Controllers
     {
         private readonly EmployeeService _service;
 
-
-        public EmployeeController(EmployeeService service)
+        private readonly HRMSDbContext _context;
+        public EmployeeController(EmployeeService service, HRMSDbContext context)
         {
             _service = service;
+            _context = context;
         }
 
         // 🔒 Login Check   <<- its controll on for Hr
@@ -172,7 +174,7 @@ namespace HRMS.web.Controllers
             return RedirectToAction("Index");
         }
 
-        // ------------------------- Delete Employee ----------------------------
+        // ------------------------- Delete Employee // ----------------------------
 
         public IActionResult Delete(int id)
         {
@@ -277,6 +279,23 @@ namespace HRMS.web.Controllers
             var emp = _service.GetEmployeeById(empId.Value);
 
             return View(emp);
+        }
+
+        // Employee can see there own Attendence.
+
+        public async Task<IActionResult> MyAttendance()
+        {
+            var empId = HttpContext.Session.GetInt32("EmployeeId");
+
+            if (empId == null)
+                return RedirectToAction("Login", "Employee");
+
+            var attendance = await _context.Attendances
+                .Where(a => a.EmployeeId == empId)
+                .OrderByDescending(a => a.Date)
+                .ToListAsync();
+
+            return View(attendance);
         }
     }
 }

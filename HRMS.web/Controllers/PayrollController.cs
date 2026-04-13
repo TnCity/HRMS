@@ -1,5 +1,6 @@
 ﻿using HRMS.DAL;
 using HRMS.Entities;
+using HRMS.web.Views;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -190,6 +191,7 @@ public class PayrollController : Controller
 
     private void LoadEmployees()
     {
+
         ViewBag.Employees = _context.Employees
             .Select(e => new SelectListItem
             {
@@ -207,11 +209,40 @@ public class PayrollController : Controller
         if (payroll == null)
             return NotFound();
 
-        return new ViewAsPdf("PayslipPDF", payroll)
+        // 👉 Get salary structure
+        var salary = await _context.SalaryStructures
+            .FirstOrDefaultAsync(s => s.EmployeeId == payroll.EmployeeId);
+
+        var vm = new PayslipVM
+        {
+            Payroll = payroll,
+            Salary = salary
+        };
+
+        return new ViewAsPdf("PayslipPDF", vm)
         {
             FileName = $"Payslip_{payroll.Employee.Name}_{payroll.Month}_{payroll.Year}.pdf",
             PageSize = Rotativa.AspNetCore.Options.Size.A4
         };
+    }
+
+
+
+    // for Employee Download PaySlip...
+    public async Task<IActionResult> MyPayslips()
+    {
+        var empId = HttpContext.Session.GetInt32("EmployeeId");
+
+        if (empId == null)
+            return RedirectToAction("Login", "Employee");
+
+        var payslips = await _context.Payrolls
+            .Where(p => p.EmployeeId == empId)
+            .OrderByDescending(p => p.Year)
+            .ThenByDescending(p => p.Month)
+            .ToListAsync();
+
+        return View(payslips);
     }
 }
 

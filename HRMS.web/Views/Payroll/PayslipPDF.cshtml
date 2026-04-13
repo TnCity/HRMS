@@ -1,4 +1,4 @@
-﻿@model HRMS.Entities.Payroll
+﻿@model HRMS.web.Views.PayslipVM
 
 @{
     Layout = null;
@@ -55,11 +55,6 @@
                 font-size: 16px;
             }
 
-            .flex {
-                display: flex;
-                justify-content: space-between;
-            }
-
             .footer {
                 margin-top: 40px;
             }
@@ -71,7 +66,7 @@
     <div class="header">
         <h2>HRMS Pvt Ltd</h2>
         <h3>Salary Payslip</h3>
-        <p>Month: @Model.Month / @Model.Year</p>
+        <p>Month: @Model.Payroll.Month / @Model.Payroll.Year</p>
     </div>
 
     <!-- EMPLOYEE DETAILS -->
@@ -79,21 +74,21 @@
         <table>
             <tr>
                 <th>Employee Name</th>
-                <td>@Model.Employee?.Name</td>
+                <td>@Model.Payroll.Employee?.Name</td>
                 <th>Employee ID</th>
-                <td>@Model.EmployeeId</td>
+                <td>@Model.Payroll.EmployeeId</td>
             </tr>
             <tr>
                 <th>Working Days</th>
-                <td>@Model.TotalDays</td>
+                <td>@Model.Payroll.TotalDays</td>
                 <th>Present Days</th>
-                <td>@Model.PresentDays</td>
+                <td>@Model.Payroll.PresentDays</td>
             </tr>
             <tr>
                 <th>Absent Days</th>
-                <td>@Model.AbsentDays</td>
+                <td>@Model.Payroll.AbsentDays</td>
                 <th>Pay Month</th>
-                <td>@Model.Month / @Model.Year</td>
+                <td>@Model.Payroll.Month / @Model.Payroll.Year</td>
             </tr>
         </table>
     </div>
@@ -112,43 +107,45 @@
 
             <tr>
                 <td>Basic Salary</td>
-                <td>@Model.GrossSalary.ToString("0.00")</td>
+                <td>@Model.Salary.BasicSalary.ToString("0.00")</td>
                 <td>PF</td>
-                <td>--</td>
+                <td>@Model.Salary.PF.ToString("0.00")</td>
             </tr>
 
             <tr>
-                <td>Allowances</td>
-                <td>--</td>
+                <td>HRA</td>
+                <td>@Model.Salary.HRA.ToString("0.00")</td>
                 <td>Tax</td>
-                <td>--</td>
+                <td>@Model.Salary.Tax.ToString("0.00")</td>
+            </tr>
+
+            <tr>
+                <td>DA</td>
+                <td>@Model.Salary.DA.ToString("0.00")</td>
+                <td>Loss Of Pay</td>
+                <td>@(Model.Payroll.TotalDeductions - Model.Salary.PF - Model.Salary.Tax)</td>
             </tr>
 
             <tr>
                 <td><b>Total Earnings</b></td>
-                <td><b>@Model.GrossSalary.ToString("0.00")</b></td>
+                <td><b>@Model.Payroll.GrossSalary.ToString("0.00")</b></td>
                 <td><b>Total Deductions</b></td>
-                <td><b>@Model.TotalDeductions.ToString("0.00")</b></td>
+                <td><b>@Model.Payroll.TotalDeductions.ToString("0.00")</b></td>
             </tr>
 
             <tr class="net">
                 <td colspan="2">Net Salary</td>
-                <td colspan="2">₹ @Model.NetSalary.ToString("0.00")</td>
+                <td colspan="2">₹ @Model.Payroll.NetSalary.ToString("0.00")</td>
             </tr>
         </table>
     </div>
 
     <!-- FOOTER -->
-    <div class="footer flex">
-        <div>
-            <p>Generated on: @DateTime.Now.ToString("dd MMM yyyy")</p>
-        </div>
-
-        <div>
-            <p>Authorized Signature</p>
-            <br />
-            <p>___________________</p>
-        </div>
+    <div class="footer">
+        <p>Generated on: @DateTime.Now.ToString("dd MMM yyyy")</p>
+        <br />
+        <p>Authorized Signature</p>
+        <p>___________________</p>
     </div>
 
 </body>
