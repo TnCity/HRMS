@@ -1,6 +1,7 @@
 ﻿
 
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace HRMS.Entities
@@ -40,7 +41,8 @@ namespace HRMS.Entities
         public string Address { get; set; }
 
         [Required]
-        [Range(1000, 1000000)] 
+        [Range(1000, 1000000)]
+        [Column(TypeName = "decimal(18,2)")]
         public decimal Salary { get; set; }
 
         [Required]
