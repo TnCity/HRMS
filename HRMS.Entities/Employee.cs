@@ -47,5 +47,6 @@ namespace HRMS.Entities
 
         [Required]
         public string Designation { get; set; }
+        public int? EmployeeCode { get; set; }
     }
 }

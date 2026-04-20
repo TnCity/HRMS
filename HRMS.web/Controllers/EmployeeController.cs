@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
+using OfficeOpenXml;
+using OfficeOpenXml;
 
 namespace HRMS.web.Controllers
 {
@@ -154,6 +156,9 @@ namespace HRMS.web.Controllers
             {
                 string folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images");
 
+                if (!Directory.Exists(folder))
+                    Directory.CreateDirectory(folder);
+
                 string fileName = Guid.NewGuid().ToString() + Path.GetExtension(ProfileImage.FileName);
                 string filePath = Path.Combine(folder, fileName);
 
@@ -162,11 +167,7 @@ namespace HRMS.web.Controllers
                     ProfileImage.CopyTo(stream);
                 }
 
-                emp.ProfileImagePath = "/images/" + fileName;
-            }
-            else
-            {
-                emp.ProfileImagePath = existingEmp.ProfileImagePath;
+                existingEmp.ProfileImagePath = "/images/" + fileName;
             }
 
             _service.UpdateEmployee(emp);
@@ -297,5 +298,61 @@ namespace HRMS.web.Controllers
 
             return View(attendance);
         }
+
+
+
+        ///////Test for attendence...
+
+
+        public IActionResult ImportAttendance()
+        {
+            string filePath = @"E:\TN_Info\HRMS\Attendance_DataLog.xlsx";
+
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            var attendanceLogs = new List<AttendanceLog>();
+
+            using (var package = new ExcelPackage(new FileInfo(filePath)))
+            {
+                var sheet = package.Workbook.Worksheets[0];
+                int rows = sheet.Dimension.Rows;
+
+                for (int row = 2; row <= rows; row++)
+                {
+                    // 🔹 Read EmployeeCode
+                    string empCodeText = sheet.Cells[row, 1].Text;
+
+                    // 🔹 Convert string → int safely
+                    if (!int.TryParse(empCodeText, out int code))
+                        continue;
+
+                    // 🔹 Find employee
+                    var employee = _context.Employees
+                        .FirstOrDefault(e => e.EmployeeCode == code);
+
+                    if (employee == null)
+                        continue;
+
+                    // 🔹 Safe date parsing
+                    if (!DateTime.TryParse(sheet.Cells[row, 2].Text, out DateTime time))
+                        continue;
+
+                    // 🔹 Add to list
+                    attendanceLogs.Add(new AttendanceLog
+                    {
+                        EmployeeId = employee.EmployeeId,
+                        TimeStamp = time,
+                        PunchType = sheet.Cells[row, 3].Text,
+                        DeviceId = sheet.Cells[row, 4].Text
+                    });
+                }
+            }
+
+            _context.AttendanceLogs.AddRange(attendanceLogs);
+            _context.SaveChanges();
+
+            return Content("Attendance Imported Successfully!");
+        }
+
     }
 }
