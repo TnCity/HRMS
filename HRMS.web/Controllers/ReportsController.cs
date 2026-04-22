@@ -1,4 +1,5 @@
-﻿using HRMS.BLL.Services;
+﻿
+using HRMS.BLL.Services;
 using HRMS.DAL;
 using HRMS.Entities;
 using HRMS.web.Models;
@@ -10,14 +11,17 @@ namespace HRMS.web.Controllers
     public class ReportsController : Controller
     {
         private readonly HRMSDbContext _context;
-
-        
         private readonly PerformanceService _service;
+        private readonly AttendanceService _attendanceService;
 
-        public ReportsController(HRMSDbContext context, PerformanceService service)
+        public ReportsController(
+            HRMSDbContext context,
+            PerformanceService service,
+            AttendanceService attendanceService)
         {
             _context = context;
             _service = service;
+            _attendanceService = attendanceService;
         }
 
         // 📊 Attendance Report Page
@@ -39,13 +43,19 @@ namespace HRMS.web.Controllers
             return View();
         }
 
-
-        // 📡 Attendance API
-        public JsonResult GetEmployeeAttendance(int empId)
+        // 📡 Attendance API (FIXED)
+        public async Task<JsonResult> GetEmployeeAttendance(int empId, int year, int month)
         {
-            var data = _context.Attendances
-                .Where(a => a.EmployeeId == empId)
-                .AsEnumerable()
+            var startDate = new DateTime(year, month, 1);
+            var endDate = startDate.AddMonths(1);
+
+            var data = await _context.Attendances
+                .Where(a => a.EmployeeId == empId &&
+                            a.Date >= startDate &&
+                            a.Date < endDate)
+                .ToListAsync();
+
+            var result = data
                 .GroupBy(a => a.Date.Date)
                 .Select(g => new
                 {
@@ -58,7 +68,7 @@ namespace HRMS.web.Controllers
                 .OrderBy(x => x.rawDate)
                 .ToList();
 
-            return Json(data);
+            return Json(result);
         }
 
         // 📊 Performance Report (REAL-TIME)
@@ -67,26 +77,23 @@ namespace HRMS.web.Controllers
             if (HttpContext.Session.GetString("Admin") == null)
                 return RedirectToAction("Login", "Admin");
 
-            // ✅ Approved leaves
             var leaveData = _context.LeaveRequests
                 .Where(l => l.Status == "Approved")
                 .GroupBy(l => l.EmployeeId)
                 .ToDictionary(g => g.Key, g => g.Count());
 
-            // ✅ Build data
             var data = _context.Employees
                 .Select(e => new PerformanceVM
                 {
                     EmployeeId = e.EmployeeId,
                     EmployeeName = e.Name,
-                    TasksCompleted = 10, // temporary
+                    TasksCompleted = 10,
                     LeavesTaken = leaveData.ContainsKey(e.EmployeeId)
                                     ? leaveData[e.EmployeeId]
                                     : 0
                 })
                 .ToList();
 
-            // ✅ Calculate performance
             foreach (var item in data)
             {
                 item.ProductivityScore = (item.TasksCompleted * 5) - (item.LeavesTaken * 2);
@@ -108,7 +115,6 @@ namespace HRMS.web.Controllers
                 };
             }
 
-            // ✅ Dashboard cards
             ViewBag.TotalEmployees = data.Count;
             ViewBag.TopPerformers = data.Count(x => x.Rating >= 4);
             ViewBag.Average = data.Count(x => x.Rating == 3);
@@ -117,7 +123,7 @@ namespace HRMS.web.Controllers
             return View(data);
         }
 
-        // 📡 Performance API (for charts)
+        // 📊 Performance API
         public JsonResult GetPerformanceData()
         {
             var leaveData = _context.LeaveRequests
@@ -159,7 +165,6 @@ namespace HRMS.web.Controllers
             if (HttpContext.Session.GetString("Admin") == null)
                 return RedirectToAction("Login", "Admin");
 
-            // 🔹 Dropdown
             ViewBag.Employees = _context.Employees
                 .Select(e => new
                 {
@@ -170,10 +175,8 @@ namespace HRMS.web.Controllers
             if (empId == null)
                 return View(new List<PerformanceVM>());
 
-            // 🔥 STEP 1: Generate latest monthly data
             _service.GenerateMonthlyPerformance(DateTime.Now.Year, DateTime.Now.Month);
 
-            // 🔥 STEP 2: Fetch monthly performance (REAL DATA)
             var monthlyData = _context.MonthlyPerformances
                 .Where(x => x.EmployeeId == empId)
                 .OrderBy(x => x.Year)
@@ -182,9 +185,7 @@ namespace HRMS.web.Controllers
 
             ViewBag.MonthlyData = monthlyData;
 
-            // 🔥 STEP 3: Latest summary (for table)
             var latest = monthlyData.LastOrDefault();
-
             var data = new List<PerformanceVM>();
 
             if (latest != null)
@@ -227,6 +228,42 @@ namespace HRMS.web.Controllers
         public IActionResult ManageReports()
         {
             return View();
+        }
+
+        // ============================================================================
+        public async Task<IActionResult> TestGenerateAll()
+        {
+            var empIds = _context.AttendanceLogs
+                .Select(x => x.EmployeeId)
+                .Distinct()
+                .ToList();
+
+            foreach (var empId in empIds)
+            {
+                var dates = _context.AttendanceLogs
+                    .Where(x => x.EmployeeId == empId)
+                    .Select(x => x.TimeStamp.Date)
+                    .Distinct()
+                    .ToList();
+
+                foreach (var date in dates)
+                {
+                    await _attendanceService.GenerateAttendanceForDay(empId, date);
+                }
+
+                var allMonths = _context.AttendanceLogs
+                .Where(x => x.EmployeeId == empId)
+                .Select(x => new { x.TimeStamp.Year, x.TimeStamp.Month })
+                .Distinct()
+                .ToList();
+
+                foreach (var m in allMonths)
+                {
+                    await _attendanceService.GenerateAbsentForMonth(empId, m.Year, m.Month);
+                }
+            }
+
+            return Content("All Employees Processed");
         }
     }
 }

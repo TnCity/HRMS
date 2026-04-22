@@ -1,6 +1,4 @@
-﻿
-
-@{
+﻿@{
     ViewData["Title"] = "Attendance Report";
 }
 
@@ -8,42 +6,67 @@
 
     <h3 class="mb-3">📊 Attendance Report</h3>
 
-    <!-- Dropdown -->
-    <div class="mb-4 w-25">
-        <label class="form-label fw-semibold">Select Employee</label>
-        <select id="empDropdown" class="form-select">
-            <option value="">-- Select Employee --</option>
-            @foreach (var emp in ViewBag.Employees)
-            {
-                <option value="@emp.Id">@emp.Name (@emp.Id)</option>
-            }
-        </select>
+    <!-- Filters -->
+    <div class="d-flex gap-3 mb-4">
+
+        <div class="w-25">
+            <label class="form-label fw-semibold">Select Employee</label>
+            <select id="empDropdown" class="form-select">
+                <option value="">-- Select Employee --</option>
+                @foreach (var emp in ViewBag.Employees)
+                {
+                    <option value="@emp.Id">@emp.Name (@emp.Id)</option>
+                }
+            </select>
+        </div>
+
+        <div class="w-25">
+            <label class="form-label fw-semibold">Select Month</label>
+            <select id="monthDropdown" class="form-select">
+                <option value="">-- Select Month --</option>
+                <option value="1">January</option>
+                <option value="2">February</option>
+                <option value="3">March</option>
+                <option value="4">April</option>
+                <option value="5">May</option>
+                <option value="6">June</option>
+                <option value="7">July</option>
+                <option value="8">August</option>
+                <option value="9">September</option>
+                <option value="10">October</option>
+                <option value="11">November</option>
+                <option value="12">December</option>
+            </select>
+        </div>
+
+        <div class="w-25">
+            <label class="form-label fw-semibold">Select Year</label>
+            <select id="yearDropdown" class="form-select">
+                <option value="2025">2025</option>
+                <option value="2026">2026</option>
+            </select>
+        </div>
+
     </div>
 
     <div class="row">
 
-        <!-- LEFT PANEL -->
-        <div class="col-md-3 col-lg-2">
-            <div class="card shadow-sm h-100 border-0" style="background:#ffffff;">
-                <div class="card-header text-white"
-                     style="background: linear-gradient(45deg, #0f75d4, #6c757d);">
-                    <h6 class="mb-0">Summary</h6>
-                </div>
-                <div class="card-body p-3">
+        <!-- Summary -->
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">Summary</div>
+                <div class="card-body">
                     <div id="summary"></div>
                 </div>
             </div>
         </div>
 
-        <!-- RIGHT PANEL -->
-        <div class="col-md-9 col-lg-10">
-            <div class="card shadow-sm border-0" style="background:#ffffff;">
-                <div class="card-header text-white"
-                     style="background: linear-gradient(45deg, #007bff, #00c6ff);">
-                    <h5 class="mb-0">Attendance Trend</h5>
-                </div>
+        <!-- Chart -->
+        <div class="col-md-9">
+            <div class="card shadow-sm">
+                <div class="card-header bg-info text-white">Attendance Trend</div>
                 <div class="card-body">
-                    <canvas id="attendanceChart" height="120"></canvas>
+                    <canvas id="attendanceChart"></canvas>
                 </div>
             </div>
         </div>
@@ -51,18 +74,20 @@
     </div>
 </div>
 
-<!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
     let chart;
 
-    document.getElementById("empDropdown").addEventListener("change", function () {
+    function loadAttendance() {
 
-        let empId = this.value;
-        if (!empId) return;
+        let empId = document.getElementById("empDropdown").value;
+        let month = document.getElementById("monthDropdown").value;
+        let year = document.getElementById("yearDropdown").value;
 
-        fetch(`/Reports/GetEmployeeAttendance?empId=${empId}`)
+        if (!empId || !month || !year) return;
+
+        fetch(`/Reports/GetEmployeeAttendance?empId=${empId}&month=${month}&year=${year}`)
             .then(res => res.json())
             .then(data => {
 
@@ -73,7 +98,6 @@
 
                 let labels = data.map(x => x.date);
 
-                // Totals
                 let totalPresent = data.reduce((a, b) => a + b.present, 0);
                 let totalAbsent = data.reduce((a, b) => a + b.absent, 0);
                 let totalLeave = data.reduce((a, b) => a + b.leave, 0);
@@ -81,138 +105,50 @@
 
                 let percent = totalDays === 0 ? 0 : ((totalPresent / totalDays) * 100).toFixed(1);
 
-                // Attendance trend
                 let attendanceTrend = data.map(x => {
                     let total = x.present + x.absent + x.leave;
                     return total === 0 ? 0 : (x.present / total) * 100;
                 });
 
-                // Status badge logic
-                let status = percent >= 90 ? "Excellent"
-                           : percent >= 75 ? "Good"
-                           : "Poor";
-
-                let statusColor = percent >= 90 ? "success"
-                                : percent >= 75 ? "warning"
-                                : "danger";
-
-                // Summary UI
                 document.getElementById("summary").innerHTML = `
-                    <div class="mb-2 p-2 rounded bg-success text-white">✅ Present: ${totalPresent}</div>
-                    <div class="mb-2 p-2 rounded bg-danger text-white">❌ Absent: ${totalAbsent}</div>
-                    <div class="mb-2 p-2 rounded bg-warning text-dark">🟡 Leave: ${totalLeave}</div>
-
+                    <div class="mb-2 p-2 bg-success text-white">Present: ${totalPresent}</div>
+                    <div class="mb-2 p-2 bg-danger text-white">Absent: ${totalAbsent}</div>
+                    <div class="mb-2 p-2 bg-warning text-dark">Leave: ${totalLeave}</div>
                     <hr/>
-
-                    <label class="fw-semibold">Attendance</label>
-                    <div class="progress mb-2">
-                        <div class="progress-bar bg-primary" style="width:${percent}%">
-                            ${percent}%
-                        </div>
-                    </div>
-
-                    <p><strong>Total Days:</strong> ${totalDays}</p>
-
-                    <span class="badge bg-${statusColor}">${status}</span>
-
-                    <p class="text-muted mt-2">
-                        📌 ${totalAbsent} absences recorded this month.
-                    </p>
+                    <b>Attendance:</b> ${percent}% <br/>
+                    <b>Total Days:</b> ${totalDays}
                 `;
 
                 if (chart) chart.destroy();
 
-                let ctx = document.getElementById('attendanceChart').getContext('2d');
-
-                let gradient = ctx.createLinearGradient(0, 0, 0, 400);
-                gradient.addColorStop(0, "rgba(0,123,255,0.6)");
-                gradient.addColorStop(1, "rgba(0,123,255,0.05)");
+                let ctx = document.getElementById("attendanceChart").getContext("2d");
 
                 chart = new Chart(ctx, {
-                    type: 'line',
+                    type: "line",
                     data: {
                         labels: labels,
-                        datasets: [
-                            {
-                                label: 'Attendance %',
-                                data: attendanceTrend,
-                                borderColor: '#007bff',
-                                backgroundColor: gradient,
-                                fill: true,
-                                tension: 0.4,
-                                pointRadius: 2
-                            }
-                        ]
+                        datasets: [{
+                            label: "Attendance %",
+                            data: attendanceTrend,
+                            borderColor: "#007bff",
+                            fill: true,
+                            tension: 0.4
+                        }]
                     },
                     options: {
-                        responsive: true,
-                        interaction: {
-                            mode: 'index',
-                            intersect: false
-                        },
-                        plugins: {
-                            legend: {
-                                display: true,
-                                labels: {
-                                    usePointStyle: true,
-                                    padding: 15
-                                }
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    label: function (context) {
-                                        return context.dataset.label + ": " + context.raw.toFixed(1) + "%";
-                                    }
-                                }
-                            }
-                        },
-                        elements: {
-                            line: {
-                                borderWidth: 2
-                            },
-                            point: {
-                                radius: 2,
-                                hoverRadius: 5
-                            }
-                        },
-                        animation: {
-                            duration: 1000,
-                            easing: 'easeInOutQuart'
-                        },
                         scales: {
-                            x: {
-                                ticks: {
-                                    maxTicksLimit: 8,
-                                    callback: function (value) {
-                                        let label = this.getLabelForValue(value);
-                                        return label.split(" ")[0];
-                                    }
-                                },
-                                grid: {
-                                    display: false
-                                }
-                            },
                             y: {
                                 beginAtZero: true,
-                                max: 100,
-                                ticks: {
-                                    stepSize: 20,
-                                    callback: function (value) {
-                                        return value + "%";
-                                    }
-                                },
-                                grid: {
-                                    color: "#eaeaea"
-                                },
-                                title: {
-                                    display: true,
-                                    text: "Attendance %"
-                                }
+                                max: 100
                             }
                         }
                     }
                 });
-
             });
-    });
+    }
+
+    // Trigger on change
+    document.getElementById("empDropdown").addEventListener("change", loadAttendance);
+    document.getElementById("monthDropdown").addEventListener("change", loadAttendance);
+    document.getElementById("yearDropdown").addEventListener("change", loadAttendance);
 </script>
