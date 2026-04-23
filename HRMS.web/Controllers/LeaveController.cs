@@ -50,6 +50,8 @@ namespace HRMS.web.Controllers
 
             return RedirectToAction("MyLeaves");
         }
+
+        //------------------------------------- Employee view ----------------------------------
         public IActionResult MyLeaves()
         {
             var empId = HttpContext.Session.GetInt32("EmployeeId");

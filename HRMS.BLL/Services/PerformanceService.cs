@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using HRMS.DAL;
 using HRMS.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace HRMS.BLL.Services
 {
@@ -17,42 +16,62 @@ namespace HRMS.BLL.Services
             _context = context;
         }
 
-        public void GenerateMonthlyPerformance(int year, int month)
+        public async Task GenerateMonthlyPerformance(int year, int month)
         {
-            var employees = _context.Employees.ToList();
-            
+            if (month < 1 || month > 12)
+                throw new ArgumentException("Month must be between 1 and 12");
 
-            var taskData = _context.Tasks
-                .Where(t => t.Date.Month == month && t.Date.Year == year && t.IsCompleted)
+            if (year < 2000)
+                throw new ArgumentException("Invalid year");
+
+            var start = new DateTime(year, month, 1);
+            var end = start.AddMonths(1);
+
+            // Get all employees
+            var employees = await _context.Employees.ToListAsync();
+
+            // ✅ TASK DATA
+            var taskData = await _context.Tasks
+                .Where(t => t.IsCompleted &&
+                            t.Date >= start &&
+                            t.Date < end)
                 .GroupBy(t => t.EmployeeId)
-                .ToDictionary(g => g.Key, g => g.Count());
+                .ToDictionaryAsync(g => g.Key, g => g.Count());
 
-            var leaveData = _context.LeaveRequests
+            // ✅ LEAVE DATA (handles date range properly)
+            var leaveData = await _context.LeaveRequests
                 .Where(l => l.Status == "Approved" &&
-                            l.FromDate.Month == month &&
-                            l.FromDate.Year == year)
+                            l.FromDate < end &&
+                            l.ToDate >= start)
                 .GroupBy(l => l.EmployeeId)
-                .ToDictionary(g => g.Key, g => g.Count());
+                .ToDictionaryAsync(g => g.Key, g => g.Count());
 
             foreach (var emp in employees)
             {
-                int tasks = taskData.ContainsKey(emp.EmployeeId) ? taskData[emp.EmployeeId] : 0;
-                int leaves = leaveData.ContainsKey(emp.EmployeeId) ? leaveData[emp.EmployeeId] : 0;
+                int tasks = taskData.ContainsKey(emp.EmployeeId)
+                    ? taskData[emp.EmployeeId]
+                    : 0;
 
+                int leaves = leaveData.ContainsKey(emp.EmployeeId)
+                    ? leaveData[emp.EmployeeId]
+                    : 0;
+
+                // ✅ SCORE CALCULATION
                 int score = (tasks * 5) - (leaves * 2);
 
-                var existing = _context.MonthlyPerformances
-                    .FirstOrDefault(x => x.EmployeeId == emp.EmployeeId &&
-                                         x.Month == month &&
-                                         x.Year == year);
+                var existing = await _context.MonthlyPerformances
+                    .FirstOrDefaultAsync(x =>
+                        x.EmployeeId == emp.EmployeeId &&
+                        x.Year == year &&
+                        x.Month == month);
 
                 if (existing == null)
                 {
                     _context.MonthlyPerformances.Add(new MonthlyPerformance
                     {
                         EmployeeId = emp.EmployeeId,
-                        Month = month,
                         Year = year,
+                        Month = month,
                         TasksCompleted = tasks,
                         LeavesTaken = leaves,
                         Score = score
@@ -60,13 +79,14 @@ namespace HRMS.BLL.Services
                 }
                 else
                 {
+                    // Update existing record
                     existing.TasksCompleted = tasks;
                     existing.LeavesTaken = leaves;
                     existing.Score = score;
                 }
             }
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
     }
 }

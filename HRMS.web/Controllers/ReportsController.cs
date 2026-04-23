@@ -1,7 +1,6 @@
 ﻿
 using HRMS.BLL.Services;
 using HRMS.DAL;
-using HRMS.Entities;
 using HRMS.web.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -24,35 +23,39 @@ namespace HRMS.web.Controllers
             _attendanceService = attendanceService;
         }
 
-        // 📊 Attendance Report Page
+        //-------------- ManageReports for all Raeports. ----------------------
+
+        public IActionResult ManageReports()
+        {
+            return View();
+        }
+
+        // ===================== ATTENDANCE =====================
+
         public IActionResult AttendanceReport()
         {
             if (HttpContext.Session.GetString("Admin") == null)
                 return RedirectToAction("Login", "Admin");
 
-            var employees = _context.Employees
+            ViewBag.Employees = _context.Employees
                 .Select(e => new
                 {
                     Id = e.EmployeeId,
                     Name = e.Name
-                })
-                .ToList();
-
-            ViewBag.Employees = employees;
+                }).ToList();
 
             return View();
         }
 
-        // 📡 Attendance API (FIXED)
         public async Task<JsonResult> GetEmployeeAttendance(int empId, int year, int month)
         {
-            var startDate = new DateTime(year, month, 1);
-            var endDate = startDate.AddMonths(1);
+            var start = new DateTime(year, month, 1);
+            var end = start.AddMonths(1);
 
             var data = await _context.Attendances
                 .Where(a => a.EmployeeId == empId &&
-                            a.Date >= startDate &&
-                            a.Date < endDate)
+                            a.Date >= start &&
+                            a.Date < end)
                 .ToListAsync();
 
             var result = data
@@ -71,34 +74,34 @@ namespace HRMS.web.Controllers
             return Json(result);
         }
 
-        // 📊 Performance Report (REAL-TIME)
-        public IActionResult PerformanceReport()
+        // ===================== PERFORMANCE =====================
+
+        public async Task<IActionResult> PerformanceReport(int? year, int? month)
         {
             if (HttpContext.Session.GetString("Admin") == null)
                 return RedirectToAction("Login", "Admin");
 
-            var leaveData = _context.LeaveRequests
-                .Where(l => l.Status == "Approved")
-                .GroupBy(l => l.EmployeeId)
-                .ToDictionary(g => g.Key, g => g.Count());
+            
+            int y = year ?? DateTime.Now.Year;
+            int m = month ?? DateTime.Now.Month;
 
-            var data = _context.Employees
-                .Select(e => new PerformanceVM
-                {
-                    EmployeeId = e.EmployeeId,
-                    EmployeeName = e.Name,
-                    TasksCompleted = 10,
-                    LeavesTaken = leaveData.ContainsKey(e.EmployeeId)
-                                    ? leaveData[e.EmployeeId]
-                                    : 0
-                })
-                .ToList();
+            
+            if (m < 1 || m > 12)
+                m = DateTime.Now.Month;
 
-            foreach (var item in data)
+            
+            await _service.GenerateMonthlyPerformance(y, m);
+
+            // ✅ Fetch data
+            var data = await _context.MonthlyPerformances
+                .Include(x => x.Employee)
+                .Where(x => x.Year == y && x.Month == m)
+                .ToListAsync();
+
+            // ✅ Transform to VM
+            var result = data.Select(x =>
             {
-                item.ProductivityScore = (item.TasksCompleted * 5) - (item.LeavesTaken * 2);
-
-                item.Rating = item.ProductivityScore switch
+                int rating = x.Score switch
                 {
                     >= 80 => 5,
                     >= 60 => 4,
@@ -107,157 +110,190 @@ namespace HRMS.web.Controllers
                     _ => 1
                 };
 
-                item.Status = item.Rating switch
+                string status = rating switch
                 {
                     >= 4 => "Good",
                     3 => "Average",
                     _ => "Poor"
                 };
-            }
 
-            ViewBag.TotalEmployees = data.Count;
-            ViewBag.TopPerformers = data.Count(x => x.Rating >= 4);
-            ViewBag.Average = data.Count(x => x.Rating == 3);
-            ViewBag.LowPerformers = data.Count(x => x.Rating <= 2);
+                return new PerformanceVM
+                {
+                    EmployeeId = x.EmployeeId,
+                    EmployeeName = x.Employee.Name,
+                    TasksCompleted = x.TasksCompleted,
+                    LeavesTaken = x.LeavesTaken,
+                    ProductivityScore = x.Score,
+                    Rating = rating,
+                    Status = status
+                };
+            }).ToList();
 
-            return View(data);
+            // ✅ View data
+            ViewBag.Year = y;
+            ViewBag.Month = m;
+
+            ViewBag.TotalEmployees = result.Count;
+            ViewBag.TopPerformers = result.Count(x => x.Rating >= 4);
+            ViewBag.Average = result.Count(x => x.Rating == 3);
+            ViewBag.LowPerformers = result.Count(x => x.Rating <= 2);
+
+            return View(result);
         }
 
-        // 📊 Performance API
-        public JsonResult GetPerformanceData()
+        //public async Task<JsonResult> GetPerformanceData(int year, int month)
+        //{
+        //    await _service.GenerateMonthlyPerformance(year, month);
+
+        //    var data = await _context.MonthlyPerformances
+        //        .Include(x => x.Employee)
+        //        .Where(x => x.Year == year && x.Month == month)
+        //        .ToListAsync();
+
+        //    var result = data.Select(x =>
+        //    {
+        //        int rating = x.Score switch
+        //        {
+        //            >= 80 => 5,
+        //            >= 60 => 4,
+        //            >= 40 => 3,
+        //            >= 25 => 2,
+        //            _ => 1
+        //        };
+
+        //        return new
+        //        {
+        //            name = x.Employee.Name,
+        //            score = x.Score,
+        //            rating = rating
+        //        };
+        //    });
+
+        //    return Json(result);
+        //}
+
+        public async Task<JsonResult> GetPerformanceData(int? year, int? month)
         {
-            var leaveData = _context.LeaveRequests
-                .Where(l => l.Status == "Approved")
-                .GroupBy(l => l.EmployeeId)
-                .ToDictionary(g => g.Key, g => g.Count());
+            int y = year ?? DateTime.Now.Year;
+            int m = month ?? DateTime.Now.Month;
 
-            var data = _context.Employees
-                .Select(e => new
-                {
-                    name = e.Name,
-                    tasks = 10,
-                    leaves = leaveData.ContainsKey(e.EmployeeId)
-                                ? leaveData[e.EmployeeId]
-                                : 0
-                })
-                .AsEnumerable()
-                .Select(x => new
-                {
-                    name = x.name,
-                    score = (x.tasks * 5) - (x.leaves * 2),
-                    rating = ((x.tasks * 5) - (x.leaves * 2)) switch
-                    {
-                        >= 80 => 5,
-                        >= 60 => 4,
-                        >= 40 => 3,
-                        >= 25 => 2,
-                        _ => 1
-                    }
-                })
-                .ToList();
+            if (m < 1 || m > 12)
+                m = DateTime.Now.Month;
 
-            return Json(data);
+            await _service.GenerateMonthlyPerformance(y, m);
+
+            var data = await _context.MonthlyPerformances
+                .Include(x => x.Employee)
+                .Where(x => x.Year == y && x.Month == m)
+                .ToListAsync();
+
+            var result = data.Select(x => new
+            {
+                name = x.Employee.Name,
+                score = x.Score
+            });
+
+            return Json(result);
         }
 
-        // 👤 Individual Performance
-        public IActionResult IndividualPerformance(int? empId)
+        // ===================== INDIVIDUAL =====================
+
+        public async Task<IActionResult> IndividualPerformance(int? empId)
         {
             if (HttpContext.Session.GetString("Admin") == null)
                 return RedirectToAction("Login", "Admin");
 
-            ViewBag.Employees = _context.Employees
+            ViewBag.Employees = await _context.Employees
                 .Select(e => new
                 {
                     Id = e.EmployeeId,
                     Name = e.Name
-                }).ToList();
+                }).ToListAsync();
 
             if (empId == null)
                 return View(new List<PerformanceVM>());
 
-            _service.GenerateMonthlyPerformance(DateTime.Now.Year, DateTime.Now.Month);
+            int year = DateTime.Now.Year;
+            int month = DateTime.Now.Month;
 
-            var monthlyData = _context.MonthlyPerformances
+            // ✅ FIXED
+            await _service.GenerateMonthlyPerformance(year, month);
+
+            var monthlyData = await _context.MonthlyPerformances
                 .Where(x => x.EmployeeId == empId)
                 .OrderBy(x => x.Year)
                 .ThenBy(x => x.Month)
-                .ToList();
+                .ToListAsync();
 
             ViewBag.MonthlyData = monthlyData;
 
             var latest = monthlyData.LastOrDefault();
-            var data = new List<PerformanceVM>();
+            if (latest == null)
+                return View(new List<PerformanceVM>());
 
-            if (latest != null)
+            var emp = await _context.Employees
+                .FirstOrDefaultAsync(e => e.EmployeeId == empId);
+
+            int rating = latest.Score switch
             {
-                var emp = _context.Employees.FirstOrDefault(e => e.EmployeeId == empId);
-                if (emp == null)
-                    return View(new List<PerformanceVM>());
+                >= 80 => 5,
+                >= 60 => 4,
+                >= 40 => 3,
+                >= 25 => 2,
+                _ => 1
+            };
 
-                var vm = new PerformanceVM
-                {
-                    EmployeeId = emp.EmployeeId,
-                    EmployeeName = emp.Name,
-                    TasksCompleted = latest.TasksCompleted,
-                    LeavesTaken = latest.LeavesTaken,
-                    ProductivityScore = latest.Score
-                };
+            string status = rating switch
+            {
+                >= 4 => "Good",
+                3 => "Average",
+                _ => "Poor"
+            };
 
-                vm.Rating = vm.ProductivityScore switch
-                {
-                    >= 90 => 5,
-                    >= 70 => 4,
-                    >= 50 => 3,
-                    >= 30 => 2,
-                    _ => 1
-                };
+            var vm = new PerformanceVM
+            {
+                EmployeeId = emp.EmployeeId,
+                EmployeeName = emp.Name,
+                TasksCompleted = latest.TasksCompleted,
+                LeavesTaken = latest.LeavesTaken,
+                ProductivityScore = latest.Score,
+                Rating = rating,
+                Status = status
+            };
 
-                vm.Status = vm.Rating switch
-                {
-                    >= 4 => "Good",
-                    3 => "Average",
-                    _ => "Poor"
-                };
-
-                data.Add(vm);
-            }
-
-            return View(data);
+            return View(new List<PerformanceVM> { vm });
         }
+        
 
-        public IActionResult ManageReports()
-        {
-            return View();
-        }
+        // ===================== TEST =====================
 
-        // ============================================================================
         public async Task<IActionResult> TestGenerateAll()
         {
-            var empIds = _context.AttendanceLogs
+            var empIds = await _context.AttendanceLogs
                 .Select(x => x.EmployeeId)
                 .Distinct()
-                .ToList();
+                .ToListAsync();
 
             foreach (var empId in empIds)
             {
-                var dates = _context.AttendanceLogs
+                var dates = await _context.AttendanceLogs
                     .Where(x => x.EmployeeId == empId)
                     .Select(x => x.TimeStamp.Date)
                     .Distinct()
-                    .ToList();
+                    .ToListAsync();
 
                 foreach (var date in dates)
                 {
                     await _attendanceService.GenerateAttendanceForDay(empId, date);
                 }
 
-                var allMonths = _context.AttendanceLogs
-                .Where(x => x.EmployeeId == empId)
-                .Select(x => new { x.TimeStamp.Year, x.TimeStamp.Month })
-                .Distinct()
-                .ToList();
+                var months = await _context.AttendanceLogs
+                    .Where(x => x.EmployeeId == empId)
+                    .Select(x => new { x.TimeStamp.Year, x.TimeStamp.Month })
+                    .Distinct()
+                    .ToListAsync();
 
-                foreach (var m in allMonths)
+                foreach (var m in months)
                 {
                     await _attendanceService.GenerateAbsentForMonth(empId, m.Year, m.Month);
                 }
