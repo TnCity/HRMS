@@ -140,38 +140,6 @@ namespace HRMS.web.Controllers
 
             return View(result);
         }
-
-        //public async Task<JsonResult> GetPerformanceData(int year, int month)
-        //{
-        //    await _service.GenerateMonthlyPerformance(year, month);
-
-        //    var data = await _context.MonthlyPerformances
-        //        .Include(x => x.Employee)
-        //        .Where(x => x.Year == year && x.Month == month)
-        //        .ToListAsync();
-
-        //    var result = data.Select(x =>
-        //    {
-        //        int rating = x.Score switch
-        //        {
-        //            >= 80 => 5,
-        //            >= 60 => 4,
-        //            >= 40 => 3,
-        //            >= 25 => 2,
-        //            _ => 1
-        //        };
-
-        //        return new
-        //        {
-        //            name = x.Employee.Name,
-        //            score = x.Score,
-        //            rating = rating
-        //        };
-        //    });
-
-        //    return Json(result);
-        //}
-
         public async Task<JsonResult> GetPerformanceData(int? year, int? month)
         {
             int y = year ?? DateTime.Now.Year;
@@ -214,11 +182,16 @@ namespace HRMS.web.Controllers
                 return View(new List<PerformanceVM>());
 
             int year = DateTime.Now.Year;
-            int month = DateTime.Now.Month;
+            int currentMonth = DateTime.Now.Month;
 
-            // ✅ FIXED
-            await _service.GenerateMonthlyPerformance(year, month);
+            // ------ Generate last 3 months --------
+            for (int m = currentMonth - 3; m <= currentMonth; m++)
+            {
+                if (m > 0)
+                    await _service.GenerateMonthlyPerformance(year, m);
+            }
 
+            //  Fetch data AFTER generation
             var monthlyData = await _context.MonthlyPerformances
                 .Where(x => x.EmployeeId == empId)
                 .OrderBy(x => x.Year)
@@ -261,9 +234,11 @@ namespace HRMS.web.Controllers
                 Status = status
             };
 
-            return View(new List<PerformanceVM> { vm });
+            return View(new List<PerformanceVM> { vm }); 
         }
-        
+
+
+
 
         // ===================== TEST =====================
 

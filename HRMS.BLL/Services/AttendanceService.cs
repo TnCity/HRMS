@@ -32,16 +32,49 @@ namespace HRMS.BLL.Services
         // 🔹 STEP 2: Generate attendance for that day
         public async Task GenerateAttendanceForDay(int empId, DateTime date)
         {
+            // ❌ Skip weekend
+            if (date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday)
+                return;
+
+            // ✅ Check approved leave
+            var isOnLeave = await _context.LeaveRequests
+                .AnyAsync(l => l.EmployeeId == empId &&
+                               l.Status == "Approved" &&
+                               l.FromDate <= date &&
+                               l.ToDate >= date);
+
+            if (isOnLeave)
+            {
+                var existing = await _context.Attendances
+                    .FirstOrDefaultAsync(x => x.EmployeeId == empId && x.Date == date);
+
+                if (existing == null)
+                {
+                    _context.Attendances.Add(new Attendance
+                    {
+                        EmployeeId = empId,
+                        Date = date,
+                        Status = "Leave"
+                    });
+                }
+                else
+                {
+                    existing.Status = "Leave";
+                }
+
+                await _context.SaveChangesAsync();
+                return;
+            }
+
+            // ✅ Get logs
             var logs = await _context.AttendanceLogs
                 .Where(x => x.EmployeeId == empId &&
-                x.TimeStamp >= date &&
-                x.TimeStamp < date.AddDays(1))
+                            x.TimeStamp >= date &&
+                            x.TimeStamp < date.AddDays(1))
                 .ToListAsync();
 
-            if (!logs.Any()) return;
-
-            var hasIn = logs.Any(x => x.PunchType == "IN");
-            var hasOut = logs.Any(x => x.PunchType == "OUT");
+            bool hasIn = logs.Any(x => x.PunchType == "IN");
+            bool hasOut = logs.Any(x => x.PunchType == "OUT");
 
             string status;
 
@@ -52,10 +85,11 @@ namespace HRMS.BLL.Services
             else
                 status = "Present";
 
-            var existing = await _context.Attendances
+            
+            var existingAttendance = await _context.Attendances
                 .FirstOrDefaultAsync(x => x.EmployeeId == empId && x.Date == date);
 
-            if (existing == null)
+            if (existingAttendance == null)
             {
                 _context.Attendances.Add(new Attendance
                 {
@@ -66,7 +100,7 @@ namespace HRMS.BLL.Services
             }
             else
             {
-                existing.Status = status;
+                existingAttendance.Status = status;
             }
 
             await _context.SaveChangesAsync();
@@ -95,7 +129,6 @@ namespace HRMS.BLL.Services
                     });
                 }
             }
-
             await _context.SaveChangesAsync();
         }
     }

@@ -18,11 +18,11 @@ namespace HRMS.BLL.Services
 
         public async Task GenerateMonthlyPerformance(int year, int month)
         {
-            if (month < 1 || month > 12)
-                throw new ArgumentException("Month must be between 1 and 12");
+            //if (month < 1 || month > 12)
+            //    throw new ArgumentException("Month must be between 1 and 12");
 
-            if (year < 2000)
-                throw new ArgumentException("Invalid year");
+            //if (year < 2000)
+            //    throw new ArgumentException("Invalid year");
 
             var start = new DateTime(year, month, 1);
             var end = start.AddMonths(1);
@@ -30,7 +30,7 @@ namespace HRMS.BLL.Services
             // Get all employees
             var employees = await _context.Employees.ToListAsync();
 
-            // ✅ TASK DATA
+            //  TASK DATA
             var taskData = await _context.Tasks
                 .Where(t => t.IsCompleted &&
                             t.Date >= start &&
@@ -38,7 +38,7 @@ namespace HRMS.BLL.Services
                 .GroupBy(t => t.EmployeeId)
                 .ToDictionaryAsync(g => g.Key, g => g.Count());
 
-            // ✅ LEAVE DATA (handles date range properly)
+            //  LEAVE DATA (handles date range properly)
             var leaveData = await _context.LeaveRequests
                 .Where(l => l.Status == "Approved" &&
                             l.FromDate < end &&
@@ -56,8 +56,9 @@ namespace HRMS.BLL.Services
                     ? leaveData[emp.EmployeeId]
                     : 0;
 
-                // ✅ SCORE CALCULATION
-                int score = (tasks * 5) - (leaves * 2);
+                // ---------------- SCORE CALCULATION ----------------
+
+                int score = (tasks * 10) - (leaves * 2);
 
                 var existing = await _context.MonthlyPerformances
                     .FirstOrDefaultAsync(x =>
