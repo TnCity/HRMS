@@ -51,15 +51,30 @@ namespace HRMS.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<decimal>("BreakHours")
+                        .HasColumnType("decimal(5,2)");
+
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("EmployeeId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime?>("LoginTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("LogoutTime")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("TotalHours")
+                        .HasColumnType("decimal(5,2)");
+
+                    b.Property<decimal>("WorkingHours")
+                        .HasColumnType("decimal(5,2)");
 
                     b.HasKey("Id");
 

@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("HRMS.DAL")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8e4144580988d05824fafbc11db80865355a20fe")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+be78c84150adbec0c2ba067da1fe8fcbb7c597b4")]
 [assembly: System.Reflection.AssemblyProductAttribute("HRMS.DAL")]
 [assembly: System.Reflection.AssemblyTitleAttribute("HRMS.DAL")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

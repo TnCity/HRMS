@@ -29,6 +29,7 @@ namespace HRMS.DAL
         public DbSet<SalaryStructure> SalaryStructures { get; set; }
         public DbSet<Payroll> Payrolls { get; set; }
         public DbSet<AttendanceLog> AttendanceLogs { get; set; }
+        public DbSet<AttendanceRawData> AttendanceRawDatas { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -38,6 +39,10 @@ namespace HRMS.DAL
             modelBuilder.Entity<Employee>()
                 .Property(e => e.Salary)
                 .HasPrecision(18, 2);
+
+
+            modelBuilder.Entity<AttendanceRawData>()
+            .ToTable("Attendence_Raw_Data");
 
             // SalaryStructure relation
             modelBuilder.Entity<SalaryStructure>()
