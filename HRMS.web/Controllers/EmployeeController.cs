@@ -283,6 +283,23 @@ namespace HRMS.web.Controllers
 
         // Employee can see there own Attendence //---------------------------
 
+        //public async Task<IActionResult> MyAttendance()
+        //{
+        //    var empId = HttpContext.Session.GetInt32("EmployeeId");
+
+        //    if (empId == null)
+        //        return RedirectToAction("Login", "Employee");
+
+        //    var attendance = await _context.Attendances
+        //        .Where(a => a.EmployeeId == empId)
+        //        .OrderByDescending(a => a.Date)
+        //        .ToListAsync();
+
+        //    return View(attendance);
+        //}
+
+
+        //--------------------test----------------
         public async Task<IActionResult> MyAttendance()
         {
             var empId = HttpContext.Session.GetInt32("EmployeeId");
@@ -290,12 +307,49 @@ namespace HRMS.web.Controllers
             if (empId == null)
                 return RedirectToAction("Login", "Employee");
 
+            // 🔹 Get employee code
+            var empCode = await _context.Employees
+                .Where(e => e.EmployeeId == empId)
+                .Select(e => e.EmployeeCode)
+                .FirstOrDefaultAsync();
+
+            // 🔹 Get attendance summary
             var attendance = await _context.Attendances
                 .Where(a => a.EmployeeId == empId)
                 .OrderByDescending(a => a.Date)
                 .ToListAsync();
 
-            return View(attendance);
+            // 🔹 Get raw punch logs
+            var rawLogs = await _context.AttendanceRawDatas
+                .Where(r => r.EmployeeCode == empCode)
+                .ToListAsync();
+
+            // 🔹 Group punches by date (for easy UI)
+            var rawGrouped = rawLogs
+                .GroupBy(r => r.Timestamp.Date)
+                .ToDictionary(
+                    g => g.Key,
+                    g => g.OrderBy(x => x.Timestamp)
+                          .Select(x => x.Timestamp.ToString("HH:mm"))
+                          .ToList()
+                );
+
+            // 🔹 Combine everything
+            var result = attendance.Select(a => new AttendanceDetailVM
+            {
+                Date = a.Date,
+                Status = a.Status,
+                Login = a.LoginTime,
+                Logout = a.LogoutTime,
+                TotalHours = a.TotalHours,
+                WorkingHours = a.WorkingHours,
+
+                Punches = rawGrouped.ContainsKey(a.Date.Date)
+        ? rawGrouped[a.Date.Date]
+        : new List<string>()
+            }).ToList();
+
+            return View(result);
         }
     }
 }

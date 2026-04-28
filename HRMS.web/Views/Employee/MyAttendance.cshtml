@@ -1,13 +1,10 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
-@model List<HRMS.Entities.Attendance>
+﻿@model List<HRMS.web.Models.AttendanceDetailVM>
+@using System.Linq
 
 @{
     var presentCount = Model.Count(a => a.Status == "Present");
-    var absentCount = Model.Count(a => a.Status != "Present");
+    var absentCount = Model.Count(a => a.Status == "Absent");
+    var incompleteCount = Model.Count(a => a.Status == "Incomplete");
 }
 
 <div class="container mt-4">
@@ -16,24 +13,31 @@
 
     <!-- 🔹 SUMMARY CARDS -->
     <div class="row text-center mb-4">
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="card p-3 shadow">
                 <h6>Total Days</h6>
                 <h4>@Model.Count</h4>
             </div>
         </div>
 
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="card p-3 shadow">
                 <h6>Present</h6>
                 <h4 class="text-success">@presentCount</h4>
             </div>
         </div>
 
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="card p-3 shadow">
                 <h6>Absent</h6>
                 <h4 class="text-danger">@absentCount</h4>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card p-3 shadow">
+                <h6>Incomplete</h6>
+                <h4 class="text-warning">@incompleteCount</h4>
             </div>
         </div>
     </div>
@@ -47,12 +51,16 @@
         </div>
     </div>
 
-    <!-- 🔹 TABLE -->
+    <!-- 🔹 TABLE (UPDATED) -->
     <table class="table table-bordered table-hover shadow">
         <thead class="table-dark">
             <tr>
                 <th>Date</th>
                 <th>Status</th>
+                <th>Login</th>
+                <th>Logout</th>
+                <th>Working Hours</th>
+                <th>Punches</th>
             </tr>
         </thead>
 
@@ -61,14 +69,42 @@
             {
                 <tr>
                     <td>@a.Date.ToString("dd MMM yyyy")</td>
+
                     <td>
                         @if (a.Status == "Present")
                         {
                             <span class="badge bg-success">Present</span>
                         }
+                        else if (a.Status == "Incomplete")
+                        {
+                            <span class="badge bg-warning text-dark">Incomplete</span>
+                        }
                         else
                         {
                             <span class="badge bg-danger">Absent</span>
+                        }
+                    </td>
+
+                    <td>
+                        @(a.Login != null ? ((DateTime)a.Login).ToString("hh:mm tt") : "-")
+                    </td>
+
+                    <td>
+                        @(a.Logout != null ? ((DateTime)a.Logout).ToString("hh:mm tt") : "-")
+                    </td>
+
+                    <td>
+                        @(a.WorkingHours != null ? a.WorkingHours + " hrs" : "-")
+                    </td>
+
+                    <td>
+                        @if (a.Punches != null && a.Punches.Count > 0)
+                        {
+                            @string.Join(" → ", a.Punches)
+                        }
+                        else
+                        {
+                            <span>-</span>
                         }
                     </td>
                 </tr>
@@ -84,22 +120,17 @@
 <script>
     var ctx = document.getElementById('attendanceChart').getContext('2d');
 
-    var attendanceChart = new Chart(ctx, {
+    new Chart(ctx, {
     type: 'doughnut',
     data: {
-    labels: ['Present', 'Absent'],
+    labels: ['Present', 'Absent', 'Incomplete'],
     datasets: [{
-    data: [@presentCount, @absentCount]
+    data: [@presentCount, @absentCount, @incompleteCount]
     }]
     },
     options: {
     responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-    legend: {
-    position: 'top'
-    }
-    }
+    maintainAspectRatio: false
     }
     });
 </script>
