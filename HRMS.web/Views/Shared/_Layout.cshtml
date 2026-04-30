@@ -1,4 +1,4 @@
-﻿
+﻿@* 
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -51,6 +51,10 @@
                                                                                  : "Index")">
                     <img src="~/images/logo.png" alt="logo" style="width:40px; height:auto;" />
                 </a>
+
+                <div class="text-center text-primary mt-4">
+                    <h6>About Us</h6>
+                </div>
 
                 <!-- RIGHT SIDE -->
                 <div class="ms-auto">
@@ -191,6 +195,245 @@
     </footer>
 
     <!-- SCRIPTS -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>
+ *@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - HRMS</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/HRMS.web.styles.css" asp-append-version="true" />
+
+    <!-- Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+            .sidebar {
+                width: 240px;
+                min-height: 100vh;
+            }
+
+                .sidebar .nav-link {
+                    border-radius: 8px;
+                    padding: 10px;
+                    transition: 0.3s;
+                }
+
+                    .sidebar .nav-link:hover {
+                        background: rgba(255,255,255,0.1);
+                    }
+    </style>
+</head>
+
+<body>
+
+    <!-- 🔹 NAVBAR -->
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow">
+            <div class="container-fluid d-flex align-items-center">
+
+                <!-- LOGO -->
+                <a class="navbar-brand fw-bold text-primary"
+                       asp-controller="@(Context.Session.GetString("Admin") != null ? "Admin"
+                                                                          : Context.Session.GetInt32("EmployeeId") != null ? "Employee"
+                                                                          : "Home")"
+                       asp-action="@(Context.Session.GetString("Admin") != null ? "Dashboard"
+                                                                          : Context.Session.GetInt32("EmployeeId") != null ? "Dashboard"
+                                                                          : "Index")">
+
+                    <img src="~/images/logo.png" style="width:40px;" />
+                </a>
+
+                
+
+                <ul class="navbar-nav ms-3">
+                    <li class="nav-item">
+                        <a class="nav-link fw-semibold text-primary"
+                               asp-controller="Home"
+                               asp-action="About">
+                            About Us
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link fw-semibold text-primary"
+                               asp-controller="Home"
+                               asp-action="Contact">
+                            Contact Us
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link fw-semibold text-primary"
+                               asp-controller="Home"
+                               asp-action="Privacy">
+                            Privacy
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- RIGHT SIDE -->
+                <div class="ms-auto">
+
+                    @if (Context.Session.GetString("Admin") == null && Context.Session.GetInt32("EmployeeId") == null)
+                    {
+                        <a class="btn btn-outline-primary me-2" asp-controller="Admin" asp-action="Login">
+                            HR (Admin)
+                        </a>
+
+                        <a class="btn btn-primary" asp-controller="Employee" asp-action="Login">
+                            Employee
+                        </a>
+                    }
+                    else if (Context.Session.GetString("Admin") != null)
+                    {
+                        <span class="me-3 fw-semibold text-success">
+                            Welcome, @Context.Session.GetString("Admin")
+                        </span>
+
+                        <a class="btn btn-danger" asp-controller="Admin" asp-action="Logout">
+                            Logout
+                        </a>
+                    }
+                    else if (Context.Session.GetInt32("EmployeeId") != null)
+                    {
+                        <span class="me-3 fw-semibold text-primary">
+                            Welcome, @Context.Session.GetString("EmployeeName")
+                        </span>
+
+                        <a class="btn btn-danger" asp-controller="Employee" asp-action="Logout">
+                            Logout
+                        </a>
+                    }
+
+                </div>
+
+            </div>
+        </nav>
+    </header>
+
+    <!-- 🔹 MAIN LAYOUT -->
+    <div class="d-flex">
+
+        <!-- SIDEBAR (ADMIN ONLY) -->
+        @if (Context.Session.GetString("Admin") != null
+                    && !Context.Request.Path.Value.Contains("/Admin/Login"))
+        {
+            <div class="sidebar bg-primary text-white p-3">
+
+                <h5 class="text-center mb-4">Admin Panel</h5>
+
+                <ul class="nav flex-column">
+
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="/Admin/Dashboard">
+                            <i class="bi bi-speedometer2"></i> Dashboard
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="/Employee/Index">
+                            <i class="bi bi-people"></i> Employees
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="/Department/Index">
+                            <i class="bi bi-building"></i> Departments
+                        </a>
+                    </li>
+
+                    <!-- REPORTS -->
+                    <li class="nav-item">
+                        <a class="nav-link text-white" data-bs-toggle="collapse" href="#reportsMenu">
+                            <i class="bi bi-bar-chart"></i> Reports
+                        </a>
+
+                        <div class="collapse ps-3" id="reportsMenu">
+
+                            <a class="nav-link text-white" href="/Reports/AttendanceReport">
+                                Attendance Report
+                            </a>
+
+                            <a class="nav-link text-white" data-bs-toggle="collapse" href="#performanceSubMenu">
+                                Performance Report
+                            </a>
+
+                            <div class="collapse ps-3" id="performanceSubMenu">
+                                <a class="nav-link text-white" href="/Reports/IndividualPerformance">
+                                    Individual Report
+                                </a>
+                            </div>
+
+                            <a class="nav-link text-white" href="/Reports/ManageReports">
+                                All Reports
+                            </a>
+
+                        </div>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="/Leave/Manage">
+                            <i class="bi bi-calendar-check"></i> Leave
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="/Task/AddTask">
+                            <i class="bi bi-calendar-minus"></i> Task Assignment
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="/Payroll/Generate">
+                            <i class="bi bi-currency-rupee"></i> Payslip Generate
+                        </a>
+                    </li>
+
+                </ul>
+            </div>
+        }
+
+        <!-- PAGE CONTENT -->
+        <div class="flex-grow-1 p-4">
+            @RenderBody()
+        </div>
+
+    </div>
+
+    <!-- 🔹 FOOTER -->
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2026 - HRMS -
+            <a asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+
+    <!-- 🔹 SCRIPTS -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 

@@ -6,6 +6,7 @@ using HRMS.DAL;
 using HRMS.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.VisualBasic;
 
 namespace HRMS.web.Controllers
 {
@@ -85,7 +86,7 @@ namespace HRMS.web.Controllers
             if (HttpContext.Session.GetString("Admin") == null)
                 return RedirectToAction("Login");
 
-            ViewBag.AdminEmail = HttpContext.Session.GetString("Admin"); // ✅ for UI
+            ViewBag.AdminEmail = HttpContext.Session.GetString("Admin"); // 
 
             return View();
         }
@@ -146,5 +147,8 @@ namespace HRMS.web.Controllers
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
+
+        
     }
 }

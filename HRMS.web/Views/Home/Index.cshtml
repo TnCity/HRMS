@@ -1,7 +1,81 @@
-﻿@{
+﻿
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome To HRMS Portal</h1>
-</div>
+<!-- 🔹 IMAGE SLIDER -->
+<div id="homeCarousel" class="carousel slide mb-4" data-bs-ride="carousel" data-bs-interval="3000">
+
+    <!-- Indicators -->
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#homeCarousel" data-bs-slide-to="0" class="active"></button>
+        <button type="button" data-bs-target="#homeCarousel" data-bs-slide-to="1"></button>
+        <button type="button" data-bs-target="#homeCarousel" data-bs-slide-to="2"></button>
+    </div>
+
+    <div class="carousel-inner rounded shadow">
+
+        <!-- Slide 1 -->
+        <div class="carousel-item active">
+            <img src="~/images/SliderImg1.png" class="d-block w-100" style="height:450px; object-fit:cover;">
+                
+            </div>
+
+            <!-- Slide 2 -->
+            <div class="carousel-item">
+                <img src="~/images/SliderImg2.png" class="d-block w-100" style="height:450px; object-fit:cover;">
+                    
+                </div>
+
+                <!-- Slide 3 -->
+                <div class="carousel-item">
+                    <img src="~/images/SliderImg3.jpg" class="d-block w-100" style="height:450px; object-fit:cover;">
+                        
+                    </div>
+
+                </div>
+
+                <!-- Controls -->
+                <button class="carousel-control-prev" type="button" data-bs-target="#homeCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon"></span>
+                </button>
+
+                <button class="carousel-control-next" type="button" data-bs-target="#homeCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon"></span>
+                </button>
+
+            </div>
+
+            <!-- 🔹 FEATURES -->
+            <div class="container mt-5">
+                <div class="text-center mb-4">
+                    <h2 class="fw-bold">Our Features</h2>
+                    <p class="text-muted">Everything you need to manage your workforce efficiently</p>
+                </div>
+
+                <div class="row text-center">
+
+                    <div class="col-md-4 mb-4">
+                        <div class="card p-4 shadow-sm h-100">
+                            <h5>📅 Attendance</h5>
+                            <p>Track daily employee attendance with accuracy and automation.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 mb-4">
+                        <div class="card p-4 shadow-sm h-100">
+                            <h5>📝 Leave Management</h5>
+                            <p>Easy leave application and approval workflow system.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 mb-4">
+                        <div class="card p-4 shadow-sm h-100">
+                            <h5>💰 Payroll</h5>
+                            <p>Generate payslips and manage salary processing efficiently.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
