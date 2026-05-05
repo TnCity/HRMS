@@ -11,16 +11,3 @@ C:\Users\Administrator\source\repos\HRMS.web\HRMS.Entities\obj\Debug\net9.0\HRMS
 C:\Users\Administrator\source\repos\HRMS.web\HRMS.Entities\obj\Debug\net9.0\refint\HRMS.Entities.dll
 C:\Users\Administrator\source\repos\HRMS.web\HRMS.Entities\obj\Debug\net9.0\HRMS.Entities.pdb
 C:\Users\Administrator\source\repos\HRMS.web\HRMS.Entities\obj\Debug\net9.0\ref\HRMS.Entities.dll
-E:\.NET_Project\HRMS\HRMS.Entities\bin\Debug\net9.0\HRMS.Entities.deps.json
-E:\.NET_Project\HRMS\HRMS.Entities\bin\Debug\net9.0\HRMS.Entities.dll
-E:\.NET_Project\HRMS\HRMS.Entities\bin\Debug\net9.0\HRMS.Entities.pdb
-E:\.NET_Project\HRMS\HRMS.Entities\obj\Debug\net9.0\HRMS.Entities.csproj.AssemblyReference.cache
-E:\.NET_Project\HRMS\HRMS.Entities\obj\Debug\net9.0\HRMS.Entities.GeneratedMSBuildEditorConfig.editorconfig
-E:\.NET_Project\HRMS\HRMS.Entities\obj\Debug\net9.0\HRMS.Entities.AssemblyInfoInputs.cache
-E:\.NET_Project\HRMS\HRMS.Entities\obj\Debug\net9.0\HRMS.Entities.AssemblyInfo.cs
-E:\.NET_Project\HRMS\HRMS.Entities\obj\Debug\net9.0\HRMS.Entities.csproj.CoreCompileInputs.cache
-E:\.NET_Project\HRMS\HRMS.Entities\obj\Debug\net9.0\HRMS.Entities.sourcelink.json
-E:\.NET_Project\HRMS\HRMS.Entities\obj\Debug\net9.0\HRMS.Entities.dll
-E:\.NET_Project\HRMS\HRMS.Entities\obj\Debug\net9.0\refint\HRMS.Entities.dll
-E:\.NET_Project\HRMS\HRMS.Entities\obj\Debug\net9.0\HRMS.Entities.pdb
-E:\.NET_Project\HRMS\HRMS.Entities\obj\Debug\net9.0\ref\HRMS.Entities.dll

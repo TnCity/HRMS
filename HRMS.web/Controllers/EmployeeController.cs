@@ -266,7 +266,7 @@ namespace HRMS.web.Controllers
 
         }
 
-        //------------------------ Employee Dashboard.--------------------------
+        //------------------------ Employee Dashboard..--------------------------
         public IActionResult Dashboard()
         {
             var empId = HttpContext.Session.GetInt32("EmployeeId");
