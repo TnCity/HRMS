@@ -1,6 +1,6 @@
-﻿
+﻿﻿
 
-@model HRMS.Entities.Employee
+@model HRMS.web.Models.LoginVM;
 
 <div class="container-fluid vh-100 d-flex justify-content-center align-items-start pt-5"
      style="background: linear-gradient(135deg, #1e3c72, #2a5298);">
@@ -37,6 +37,10 @@
                 </div>
 
                 <form method="post" asp-action="Login">
+
+
+                    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
 
                     <!-- Email -->
                     <div class="mb-3">

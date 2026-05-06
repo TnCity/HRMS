@@ -206,28 +206,35 @@ namespace HRMS.web.Controllers
                 return View(model);
             }
 
-            var user = _service.Login(model.Email, model.Password);
+            // Check if email exists first
+            var employee = _service.GetByEmail(model.Email);
 
-            if (user != null)
+            if (employee == null)
             {
-                // First-time login check
-                if (user.IsFirstLogin)
-                {
-                    return RedirectToAction("ChangePassword", new { id = user.EmployeeId });
-                }
-
-                // Store session
-                HttpContext.Session.SetInt32("EmployeeId", user.EmployeeId);
-                HttpContext.Session.SetString("EmployeeName", user.Name);
-
-                return RedirectToAction("Dashboard", "Employee");
+                ModelState.AddModelError("", "Email not found.");
+                return View(model);
             }
 
-            ModelState.AddModelError("", "Invalid email or password");
-            return View(model);
+            // Check password
+            if (employee.Password != model.Password)
+            {
+                ModelState.AddModelError("", "You entered wrong password.");
+                return View(model);
+            }
+
+            // First-time login check
+            if (employee.IsFirstLogin)
+            {
+                return RedirectToAction("ChangePassword", new { id = employee.EmployeeId });
+            }
+
+            HttpContext.Session.SetInt32("EmployeeId", employee.EmployeeId);
+            HttpContext.Session.SetString("EmployeeName", employee.Name);
+
+            return RedirectToAction("Dashboard", "Employee");
         }
 
-        // ----------------------------Employee Logout:-----------------------------
+        // ---------------------------- Employee Logout: -----------------------------
 
         public IActionResult Logout()
         {

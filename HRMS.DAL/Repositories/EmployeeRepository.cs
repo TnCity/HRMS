@@ -19,7 +19,7 @@ namespace HRMS.DAL.Repositories
 
         public IEnumerable<Employee> GetAll()
         {
-            return _context.Employees.Include(e => e.Department) .ToList();
+            return _context.Employees.Include(e => e.Department).ToList();
         }
 
         public Employee GetById(int id)
@@ -77,6 +77,13 @@ namespace HRMS.DAL.Repositories
         {
             return _context.Employees
     .FirstOrDefault(x => x.Email == email && x.Password != null && x.Password == password);
+        }
+
+
+        public Employee GetByEmail(string email)
+        {
+            return _context.Employees
+                .FirstOrDefault(x => x.Email == email);
         }
     }
 }

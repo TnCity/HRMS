@@ -10,6 +10,9 @@ namespace HRMS.DAL.Repositories
         void Update(Employee employee);
         void Delete(int id);
         Employee GetByEmailAndPassword(string email, string password);
-        IEnumerable <Department> GetDepartments();
+        IEnumerable<Department> GetDepartments();
+
+        Employee GetByEmail(string email);
+
     }
 }

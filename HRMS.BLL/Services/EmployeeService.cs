@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using HRMS.DAL.Repositories;
 using HRMS.Entities;
 
+
 namespace HRMS.BLL.Services
 {
     public class EmployeeService
@@ -50,6 +51,10 @@ namespace HRMS.BLL.Services
         public Employee Login(string email, string password)
         {
             return _repo.GetByEmailAndPassword(email, password);
+        }
+        public Employee GetByEmail(string email)
+        {
+            return _repo.GetByEmail(email);
         }
     }
 }
