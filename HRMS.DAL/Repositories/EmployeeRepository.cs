@@ -75,15 +75,33 @@ namespace HRMS.DAL.Repositories
         }
         public Employee GetByEmailAndPassword(string email, string password)
         {
-            return _context.Employees
-    .FirstOrDefault(x => x.Email == email && x.Password != null && x.Password == password);
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+                return null;
+
+            var normalizedEmail = email.Trim().ToLowerInvariant();
+            var trimmedPassword = password.Trim();
+
+            // Retrieve a tracked entity so callers can update flags (e.g., IsFirstLogin)
+            var employee = _context.Employees
+                .Include(e => e.Department)
+                .FirstOrDefault(x => x.Email != null && x.Email.ToLower() == normalizedEmail);
+
+            if (employee == null) return null;
+
+            // Simple plain-text comparison for now (replace with hashing in production)
+            if (string.Equals(employee.Password?.Trim(), trimmedPassword, StringComparison.Ordinal))
+                return employee;
+
+            return null;
         }
 
 
         public Employee GetByEmail(string email)
         {
+            if (string.IsNullOrWhiteSpace(email)) return null;
+            var normalizedEmail = email.Trim().ToLowerInvariant();
             return _context.Employees
-                .FirstOrDefault(x => x.Email == email);
+                .FirstOrDefault(x => x.Email != null && x.Email.ToLower() == normalizedEmail);
         }
     }
 }

@@ -22,6 +22,8 @@ builder.Services.AddScoped<PerformanceService>();
 
 
 builder.Services.AddSession();
+// Session requires a distributed cache implementation
+builder.Services.AddDistributedMemoryCache();
 
 // ✅ JWT
 builder.Services.AddAuthentication("JwtAuth")
