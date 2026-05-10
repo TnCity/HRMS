@@ -31,8 +31,7 @@ namespace HRMS.DAL.Repositories
 
         public void Add(Employee employee)
         {
-            employee.Password = "123";
-            employee.IsFirstLogin = true;
+            
 
 
             _context.Employees.Add(employee);

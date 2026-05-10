@@ -47,7 +47,7 @@ namespace HRMS.web.Controllers
             _context.SaveChanges();
 
             TempData["Success"] = "Registration successful!";
-            return RedirectToAction("Login"); // ✅ better UX
+            return RedirectToAction("Login"); 
         }
 
         // ----------------- LOGIN -----------------

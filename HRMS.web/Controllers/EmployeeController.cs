@@ -206,7 +206,7 @@ namespace HRMS.web.Controllers
                 return View(model);
             }
 
-            // Check if email exists first
+            // Check if email exists
             var employee = _service.GetByEmail(model.Email);
 
             if (employee == null)
@@ -215,21 +215,23 @@ namespace HRMS.web.Controllers
                 return View(model);
             }
 
-            // Check password
-            if (employee.Password != model.Password)
+            // Verify hashed password using service
+            var loggedInEmployee = _service.Login(model.Email, model.Password);
+
+            if (loggedInEmployee == null)
             {
                 ModelState.AddModelError("", "You entered wrong password.");
                 return View(model);
             }
 
             // First-time login check
-            if (employee.IsFirstLogin)
+            if (loggedInEmployee.IsFirstLogin)
             {
-                return RedirectToAction("ChangePassword", new { id = employee.EmployeeId });
+                return RedirectToAction("ChangePassword", new { id = loggedInEmployee.EmployeeId });
             }
 
-            HttpContext.Session.SetInt32("EmployeeId", employee.EmployeeId);
-            HttpContext.Session.SetString("EmployeeName", employee.Name);
+            HttpContext.Session.SetInt32("EmployeeId", loggedInEmployee.EmployeeId);
+            HttpContext.Session.SetString("EmployeeName", loggedInEmployee.Name);
 
             return RedirectToAction("Dashboard", "Employee");
         }

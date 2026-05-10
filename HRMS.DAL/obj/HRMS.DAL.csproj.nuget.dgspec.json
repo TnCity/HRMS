@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Administrator\\source\\repos\\HRMS.web\\HRMS.DAL\\HRMS.DAL.csproj": {}
+    "E:\\.NET_Project\\HRMS\\HRMS.DAL\\HRMS.DAL.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Administrator\\source\\repos\\HRMS.web\\HRMS.DAL\\HRMS.DAL.csproj": {
+    "E:\\.NET_Project\\HRMS\\HRMS.DAL\\HRMS.DAL.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Administrator\\source\\repos\\HRMS.web\\HRMS.DAL\\HRMS.DAL.csproj",
+        "projectUniqueName": "E:\\.NET_Project\\HRMS\\HRMS.DAL\\HRMS.DAL.csproj",
         "projectName": "HRMS.DAL",
-        "projectPath": "C:\\Users\\Administrator\\source\\repos\\HRMS.web\\HRMS.DAL\\HRMS.DAL.csproj",
-        "packagesPath": "C:\\Users\\Administrator\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Administrator\\source\\repos\\HRMS.web\\HRMS.DAL\\obj\\",
+        "projectPath": "E:\\.NET_Project\\HRMS\\HRMS.DAL\\HRMS.DAL.csproj",
+        "packagesPath": "C:\\Users\\Tapajyoti Naskar\\.nuget\\packages\\",
+        "outputPath": "E:\\.NET_Project\\HRMS\\HRMS.DAL\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Administrator\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Tapajyoti Naskar\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -32,8 +32,8 @@
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "C:\\Users\\Administrator\\source\\repos\\HRMS.web\\HRMS.Entities\\HRMS.Entities.csproj": {
-                "projectPath": "C:\\Users\\Administrator\\source\\repos\\HRMS.web\\HRMS.Entities\\HRMS.Entities.csproj"
+              "E:\\.NET_Project\\HRMS\\HRMS.Entities\\HRMS.Entities.csproj": {
+                "projectPath": "E:\\.NET_Project\\HRMS\\HRMS.Entities\\HRMS.Entities.csproj"
               }
             }
           }
@@ -48,7 +48,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "10.0.200"
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net9.0": {
@@ -85,24 +85,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.201/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.313/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\Administrator\\source\\repos\\HRMS.web\\HRMS.Entities\\HRMS.Entities.csproj": {
+    "E:\\.NET_Project\\HRMS\\HRMS.Entities\\HRMS.Entities.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Administrator\\source\\repos\\HRMS.web\\HRMS.Entities\\HRMS.Entities.csproj",
+        "projectUniqueName": "E:\\.NET_Project\\HRMS\\HRMS.Entities\\HRMS.Entities.csproj",
         "projectName": "HRMS.Entities",
-        "projectPath": "C:\\Users\\Administrator\\source\\repos\\HRMS.web\\HRMS.Entities\\HRMS.Entities.csproj",
-        "packagesPath": "C:\\Users\\Administrator\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Administrator\\source\\repos\\HRMS.web\\HRMS.Entities\\obj\\",
+        "projectPath": "E:\\.NET_Project\\HRMS\\HRMS.Entities\\HRMS.Entities.csproj",
+        "packagesPath": "C:\\Users\\Tapajyoti Naskar\\.nuget\\packages\\",
+        "outputPath": "E:\\.NET_Project\\HRMS\\HRMS.Entities\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Administrator\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Tapajyoti Naskar\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -129,7 +129,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "10.0.200"
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net9.0": {
@@ -156,7 +156,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.201/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.313/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
