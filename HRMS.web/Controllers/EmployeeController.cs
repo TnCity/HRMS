@@ -5,29 +5,27 @@ using HRMS.web.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
-
 
 namespace HRMS.web.Controllers
 {
     public class EmployeeController : Controller
     {
         private readonly EmployeeService _service;
-
         private readonly HRMSDbContext _context;
+
         public EmployeeController(EmployeeService service, HRMSDbContext context)
         {
             _service = service;
             _context = context;
         }
 
-        // 🔒 Login Check   <<- its controll on for Hr
+        // 🔒 Admin Login Check
         private bool IsAdminLoggedIn()
         {
             return HttpContext.Session.GetString("Admin") != null;
         }
 
-        // ✅ INDEX
+        // ====================== INDEX ======================
         public IActionResult Index(string search, int page = 1)
         {
             if (!IsAdminLoggedIn())
@@ -35,10 +33,9 @@ namespace HRMS.web.Controllers
 
             int pageSize = 5;
 
-            // 🔍 Get all employees first
-            var employees = _service.GetEmployees(); // no paging here
+            var employees = _service.GetEmployees();
 
-            // 🔍 Apply search
+            // Search
             if (!string.IsNullOrEmpty(search))
             {
                 search = search.ToLower();
@@ -52,7 +49,7 @@ namespace HRMS.web.Controllers
 
             int totalRecords = employees.Count();
 
-            // 📄 Apply pagination AFTER search
+            // Pagination
             var data = employees
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
@@ -65,12 +62,13 @@ namespace HRMS.web.Controllers
             return View(data);
         }
 
-        //  --------------------------Create Employee (HR can access)-----------------------------
-
+        // ====================== CREATE ======================
         public IActionResult Create()
         {
             var departments = _service.GetDepartments();
-            ViewBag.Departments = new SelectList(departments, "DepartmentId", "DepartmentName");
+
+            ViewBag.Departments =
+                new SelectList(departments, "DepartmentId", "DepartmentName");
 
             return View();
         }
@@ -82,19 +80,31 @@ namespace HRMS.web.Controllers
             if (!ModelState.IsValid)
             {
                 var departments = _service.GetDepartments();
-                ViewBag.Departments = new SelectList(departments, "DepartmentId", "DepartmentName", emp.DepartmentId);
+
+                ViewBag.Departments =
+                    new SelectList(departments,
+                    "DepartmentId",
+                    "DepartmentName",
+                    emp.DepartmentId);
+
                 return View(emp);
             }
 
-            // ✅ Image Upload
+            // Image Upload
             if (ProfileImage != null)
             {
-                string folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images");
+                string folder = Path.Combine(
+                    Directory.GetCurrentDirectory(),
+                    "wwwroot/images"
+                );
 
                 if (!Directory.Exists(folder))
                     Directory.CreateDirectory(folder);
 
-                string fileName = Guid.NewGuid().ToString() + Path.GetExtension(ProfileImage.FileName);
+                string fileName =
+                    Guid.NewGuid().ToString() +
+                    Path.GetExtension(ProfileImage.FileName);
+
                 string filePath = Path.Combine(folder, fileName);
 
                 using (var stream = new FileStream(filePath, FileMode.Create))
@@ -105,39 +115,39 @@ namespace HRMS.web.Controllers
                 emp.ProfileImagePath = "/images/" + fileName;
             }
 
-
             _service.AddEmployee(emp);
 
             TempData["success"] = "Employee added successfully!";
+
             return RedirectToAction(nameof(Index));
         }
 
-        // ----------------- Details Employee ---------------
-
+        // ====================== DETAILS ======================
         public IActionResult Details(int id)
         {
             var emp = _service.GetEmployeeById(id);
+
             if (emp == null)
-            {
                 return NotFound();
 
-            }
             return View(emp);
         }
 
-
-        //  -------------------------- Edit Employee-----------------------------
-
+        // ====================== EDIT ======================
         public IActionResult Edit(int id)
         {
             var emp = _service.GetEmployeeById(id);
 
             var departments = _service.GetDepartments();
-            ViewBag.Departments = new SelectList(departments, "DepartmentId", "DepartmentName", emp.DepartmentId);
+
+            ViewBag.Departments =
+                new SelectList(departments,
+                "DepartmentId",
+                "DepartmentName",
+                emp.DepartmentId);
 
             return View(emp);
         }
-
 
         [HttpPost]
         public IActionResult Edit(Employee emp, IFormFile? ProfileImage)
@@ -147,18 +157,34 @@ namespace HRMS.web.Controllers
             if (!ModelState.IsValid)
             {
                 var departments = _service.GetDepartments();
-                ViewBag.Departments = new SelectList(departments, "DepartmentId", "DepartmentName", emp.DepartmentId);
+
+                ViewBag.Departments =
+                    new SelectList(departments,
+                    "DepartmentId",
+                    "DepartmentName",
+                    emp.DepartmentId);
+
                 return View(emp);
             }
 
+            if (existingEmp == null)
+                return NotFound();
+
+            // Upload image
             if (ProfileImage != null && ProfileImage.Length > 0)
             {
-                string folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images");
+                string folder = Path.Combine(
+                    Directory.GetCurrentDirectory(),
+                    "wwwroot/images"
+                );
 
                 if (!Directory.Exists(folder))
                     Directory.CreateDirectory(folder);
 
-                string fileName = Guid.NewGuid().ToString() + Path.GetExtension(ProfileImage.FileName);
+                string fileName =
+                    Guid.NewGuid().ToString() +
+                    Path.GetExtension(ProfileImage.FileName);
+
                 string filePath = Path.Combine(folder, fileName);
 
                 using (var stream = new FileStream(filePath, FileMode.Create))
@@ -166,33 +192,42 @@ namespace HRMS.web.Controllers
                     ProfileImage.CopyTo(stream);
                 }
 
-                existingEmp.ProfileImagePath = "/images/" + fileName;
+                emp.ProfileImagePath = "/images/" + fileName;
+            }
+            else
+            {
+                emp.ProfileImagePath = existingEmp.ProfileImagePath;
             }
 
             _service.UpdateEmployee(emp);
 
+            TempData["success"] = "Employee updated successfully!";
+
             return RedirectToAction("Index");
         }
 
-        // ------------------------- Delete Employee // ----------------------------
-
+        // ====================== DELETE ======================
         public IActionResult Delete(int id)
         {
             var emp = _service.GetEmployeeById(id);
+
+            if (emp == null)
+                return NotFound();
+
             return View(emp);
         }
-
 
         [HttpPost, ActionName("Delete")]
         public IActionResult DeleteConfirmed(int id)
         {
             _service.DeleteEmployee(id);
+
+            TempData["success"] = "Employee deleted successfully!";
+
             return RedirectToAction("Index");
         }
 
-
-
-        // ------------------------- Login Employee ----------------------------
+        // ====================== LOGIN ======================
         public IActionResult Login()
         {
             return View();
@@ -206,7 +241,7 @@ namespace HRMS.web.Controllers
                 return View(model);
             }
 
-            // Check if email exists
+            // Check email
             var employee = _service.GetByEmail(model.Email);
 
             if (employee == null)
@@ -215,43 +250,54 @@ namespace HRMS.web.Controllers
                 return View(model);
             }
 
-            // Verify hashed password using service
-            var loggedInEmployee = _service.Login(model.Email, model.Password);
+            // Login verification
+            var loggedInEmployee =
+                _service.Login(model.Email, model.Password);
 
             if (loggedInEmployee == null)
             {
-                ModelState.AddModelError("", "You entered wrong password.");
+                ModelState.AddModelError("", "Wrong password.");
                 return View(model);
             }
 
-            // First-time login check
+            // First login
             if (loggedInEmployee.IsFirstLogin)
             {
-                return RedirectToAction("ChangePassword", new { id = loggedInEmployee.EmployeeId });
+                return RedirectToAction(
+                    "ChangePassword",
+                    new { id = loggedInEmployee.EmployeeId }
+                );
             }
 
-            HttpContext.Session.SetInt32("EmployeeId", loggedInEmployee.EmployeeId);
-            HttpContext.Session.SetString("EmployeeName", loggedInEmployee.Name);
+            HttpContext.Session.SetInt32(
+                "EmployeeId",
+                loggedInEmployee.EmployeeId
+            );
 
-            return RedirectToAction("Dashboard", "Employee");
+            HttpContext.Session.SetString(
+                "EmployeeName",
+                loggedInEmployee.Name
+            );
+
+            return RedirectToAction("Dashboard");
         }
 
-        // ---------------------------- Employee Logout: -----------------------------
-
+        // ====================== LOGOUT ======================
         public IActionResult Logout()
         {
             HttpContext.Session.Clear();
-            return RedirectToAction("Index", "Home");
 
+            return RedirectToAction("Index", "Home");
         }
 
-        // -------------------------Employee Change Password ----------------------------
-        public IActionResult ChangePassword(int Id)
+        // ====================== CHANGE PASSWORD ======================
+        public IActionResult ChangePassword(int id)
         {
             var model = new ChangePasswordVM
             {
-                EmployeeId = Id
+                EmployeeId = id
             };
+
             return View(model);
         }
 
@@ -262,53 +308,38 @@ namespace HRMS.web.Controllers
             {
                 return View(model);
             }
-            var emp = _service.GetEmployeeById(model.EmployeeId);
-            if (emp == null)
-            {
-                return NotFound();
-            }
-            emp.Password = model.NewPassword;
-            emp.IsFirstLogin = false;
-            _service.UpdateEmployee(emp);
-            TempData["success"] = "Password changed successfully! Please log in with your new password.";
-            return RedirectToAction("Login");
 
+            var emp = _service.GetEmployeeById(model.EmployeeId);
+
+            if (emp == null)
+                return NotFound();
+
+            emp.Password = model.NewPassword;
+
+            emp.IsFirstLogin = false;
+
+            _service.UpdateEmployee(emp);
+
+            TempData["success"] =
+                "Password changed successfully! Please login again.";
+
+            return RedirectToAction("Login");
         }
 
-        //------------------------ Employee Dashboard..--------------------------
+        // ====================== DASHBOARD ======================
         public IActionResult Dashboard()
         {
             var empId = HttpContext.Session.GetInt32("EmployeeId");
 
             if (empId == null)
-            {
                 return RedirectToAction("Login");
-            }
 
             var emp = _service.GetEmployeeById(empId.Value);
 
             return View(emp);
         }
 
-        // Employee can see there own Attendence //---------------------------
-
-        //public async Task<IActionResult> MyAttendance()
-        //{
-        //    var empId = HttpContext.Session.GetInt32("EmployeeId");
-
-        //    if (empId == null)
-        //        return RedirectToAction("Login", "Employee");
-
-        //    var attendance = await _context.Attendances
-        //        .Where(a => a.EmployeeId == empId)
-        //        .OrderByDescending(a => a.Date)
-        //        .ToListAsync();
-
-        //    return View(attendance);
-        //}
-
-
-        //--------------------test----------------
+        // ====================== MY ATTENDANCE ======================
         public async Task<IActionResult> MyAttendance()
         {
             var empId = HttpContext.Session.GetInt32("EmployeeId");
@@ -316,24 +347,24 @@ namespace HRMS.web.Controllers
             if (empId == null)
                 return RedirectToAction("Login", "Employee");
 
-            // 🔹 Get employee code
+            // Employee code
             var empCode = await _context.Employees
                 .Where(e => e.EmployeeId == empId)
                 .Select(e => e.EmployeeCode)
                 .FirstOrDefaultAsync();
 
-            // 🔹 Get attendance summary
+            // Attendance summary
             var attendance = await _context.Attendances
                 .Where(a => a.EmployeeId == empId)
                 .OrderByDescending(a => a.Date)
                 .ToListAsync();
 
-            // 🔹 Get raw punch logs
+            // Raw logs
             var rawLogs = await _context.AttendanceRawDatas
                 .Where(r => r.EmployeeCode == empCode)
                 .ToListAsync();
 
-            // 🔹 Group punches by date (for easy UI)
+            // Group punches
             var rawGrouped = rawLogs
                 .GroupBy(r => r.Timestamp.Date)
                 .ToDictionary(
@@ -343,7 +374,7 @@ namespace HRMS.web.Controllers
                           .ToList()
                 );
 
-            // 🔹 Combine everything
+            // Final result
             var result = attendance.Select(a => new AttendanceDetailVM
             {
                 Date = a.Date,
@@ -354,8 +385,8 @@ namespace HRMS.web.Controllers
                 WorkingHours = a.WorkingHours,
 
                 Punches = rawGrouped.ContainsKey(a.Date.Date)
-        ? rawGrouped[a.Date.Date]
-        : new List<string>()
+                    ? rawGrouped[a.Date.Date]
+                    : new List<string>()
             }).ToList();
 
             return View(result);
