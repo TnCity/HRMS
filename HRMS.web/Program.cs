@@ -1,31 +1,44 @@
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Rotativa.AspNetCore;
+using System.Globalization;
 using System.Text;
 using HRMS.BLL.Services;
 using HRMS.DAL;
 using HRMS.DAL.Repositories;
-using Microsoft.EntityFrameworkCore;
-using Rotativa.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // DB
 builder.Services.AddDbContext<HRMSDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddControllersWithViews();
+// Localization
+builder.Services.AddLocalization(options =>
+{
+    options.ResourcesPath = "Resources";
+});
 
+// MVC
+builder.Services.AddControllersWithViews()
+    .AddViewLocalization()
+    .AddDataAnnotationsLocalization();
+
+// Services
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<EmployeeService>();
 builder.Services.AddScoped<AttendanceService>();
 builder.Services.AddScoped<PerformanceService>();
 
-
-builder.Services.AddSession();
-// Session requires a distributed cache implementation
+// Session
 builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession();
 
-// ✅ JWT
+// JWT
 builder.Services.AddAuthentication("JwtAuth")
     .AddJwtBearer("JwtAuth", options =>
     {
@@ -42,12 +55,24 @@ builder.Services.AddAuthentication("JwtAuth")
 
 builder.Services.AddAuthorization();
 
+var app = builder.Build();
 
+// Localization cultures
+var cultures = new[]
+{
+    new CultureInfo("en"),
+    new CultureInfo("bn")
+};
 
-var app = builder.Build(); // ✅ MUST come before app.Use...
+app.UseRequestLocalization(new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new RequestCulture("en"),
+    SupportedCultures = cultures,
+    SupportedUICultures = cultures
+});
 
+// Rotativa
 RotativaConfiguration.Setup(app.Environment.WebRootPath, "Rotativa");
-
 
 // Middleware
 if (!app.Environment.IsDevelopment())
@@ -57,11 +82,15 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
 app.UseStaticFiles();
+
 app.UseRouting();
+
 app.UseSession();
 
-app.UseAuthentication(); // ✅ correct place
+app.UseAuthentication();
+
 app.UseAuthorization();
 
 app.MapControllerRoute(

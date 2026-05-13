@@ -5,11 +5,17 @@ namespace HRMS.DAL.Repositories
     public interface IEmployeeRepository
     {
         IEnumerable<Employee> GetAll();
+
         Employee GetById(int id);
+
         void Add(Employee employee);
+
         void Update(Employee employee);
+
         void Delete(int id);
+
         Employee GetByEmailAndPassword(string email, string password);
+
         IEnumerable<Department> GetDepartments();
 
         Employee GetByEmail(string email);

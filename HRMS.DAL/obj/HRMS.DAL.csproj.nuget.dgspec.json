@@ -67,6 +67,10 @@
               "suppressParent": "All",
               "target": "Package",
               "version": "[9.0.14, )"
+            },
+            "Microsoft.Extensions.Localization": {
+              "target": "Package",
+              "version": "[10.0.8, )"
             }
           },
           "imports": [
@@ -138,6 +142,10 @@
             "Microsoft.AspNetCore.Mvc.Abstractions": {
               "target": "Package",
               "version": "[2.3.9, )"
+            },
+            "Microsoft.Extensions.Localization": {
+              "target": "Package",
+              "version": "[10.0.8, )"
             }
           },
           "imports": [

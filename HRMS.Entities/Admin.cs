@@ -16,7 +16,9 @@ namespace HRMS.Entities
         public string EmailId { get; set; }
 
 
+
         [Required(ErrorMessage ="Insert Password")]
         public string Password { get; set; }
     }
+
 }
