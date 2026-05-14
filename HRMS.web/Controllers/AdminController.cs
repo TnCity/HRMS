@@ -72,6 +72,44 @@ namespace HRMS.web.Controllers
         }
 
         [HttpPost]
+        //public IActionResult Login(Admin model)
+        //{
+        //    if (!ModelState.IsValid)
+        //        return View(model);
+
+        //    var admin = _context.Admins
+        //        .FirstOrDefault(a => a.EmailId == model.EmailId);
+
+        //    if (admin == null)
+        //    {
+        //        ViewBag.Error = "Invalid Email or Password";
+        //        return View(model);
+        //    }
+
+        //    // VERIFY HASHED PASSWORD
+        //    var result = _passwordHasher.VerifyHashedPassword(
+        //        admin,
+        //        admin.Password,
+        //        model.Password
+        //    );
+
+        //    if (result == PasswordVerificationResult.Success)
+        //    {
+        //        HttpContext.Session.SetString("Admin", admin.EmailId);
+
+        //        return RedirectToAction("Dashboard");
+        //    }
+
+        //    ViewBag.Error = "Invalid Email or Password";
+
+        //    return View(model);
+        //}
+
+
+
+
+        //--------------------------test--------------------------
+
         public IActionResult Login(Admin model)
         {
             if (!ModelState.IsValid)
@@ -86,14 +124,34 @@ namespace HRMS.web.Controllers
                 return View(model);
             }
 
-            // VERIFY HASHED PASSWORD
-            var result = _passwordHasher.VerifyHashedPassword(
-                admin,
-                admin.Password,
-                model.Password
-            );
+            bool isValidPassword = false;
 
-            if (result == PasswordVerificationResult.Success)
+            // ✅ Check if password is hashed
+            if (admin.Password.StartsWith("AQAAAA"))
+            {
+                // Verify hashed password
+                var result = _passwordHasher.VerifyHashedPassword(
+                    admin,
+                    admin.Password,
+                    model.Password
+                );
+
+                isValidPassword = result == PasswordVerificationResult.Success;
+            }
+            else
+            {
+                // Old plain text password support
+                isValidPassword = admin.Password == model.Password;
+
+                // Optional: auto convert old password to hashed
+                if (isValidPassword)
+                {
+                    admin.Password = _passwordHasher.HashPassword(admin, model.Password);
+                    _context.SaveChanges();
+                }
+            }
+
+            if (isValidPassword)
             {
                 HttpContext.Session.SetString("Admin", admin.EmailId);
 
