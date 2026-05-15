@@ -31,6 +31,13 @@ namespace HRMS.DAL
         public DbSet<AttendanceLog> AttendanceLogs { get; set; }
         public DbSet<AttendanceRawData> AttendanceRawDatas { get; set; }
         public DbSet<ContactMessage> ContactMessages { get; set; }
+        public DbSet<Job> Jobs { get; set; }
+        public DbSet<Application> Applications { get; set; }
+        public DbSet<Candidate> Candidates { get; set; }
+        public DbSet<Offer> Offers { get; set; }
+        public DbSet<Interview> Interviews { get; set; }
+
+
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

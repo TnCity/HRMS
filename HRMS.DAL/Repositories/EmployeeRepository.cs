@@ -31,9 +31,6 @@ namespace HRMS.DAL.Repositories
 
         public void Add(Employee employee)
         {
-            
-
-
             _context.Employees.Add(employee);
             _context.SaveChanges();
         }

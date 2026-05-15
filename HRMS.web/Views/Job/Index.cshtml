@@ -1,0 +1,49 @@
+﻿@model IEnumerable<HRMS.Entities.Job>
+
+@{
+    ViewData["Title"] = "Jobs";
+}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between mb-3">
+        <h3>Job List</h3>
+
+        <a asp-action="Create"
+               class="btn btn-primary">
+            Add Job
+        </a>
+    </div>
+
+    <table class="table table-bordered table-striped">
+
+        <thead class="table-dark">
+            <tr>
+                <th>Title</th>
+                <th>Department</th>
+                <th>Location</th>
+                <th>Salary</th>
+                <th>Last Date</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Title</td>
+                    <td>@item.Department</td>
+                    <td>@item.Location</td>
+                    <td>@item.SalaryRange</td>
+                    <td>@item.LastDate.ToShortDateString()</td>
+                    <td>@item.Status</td>
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+
+</div>

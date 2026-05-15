@@ -1,4 +1,3 @@
-
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
@@ -28,29 +27,42 @@ builder.Services.AddControllersWithViews()
     .AddViewLocalization()
     .AddDataAnnotationsLocalization();
 
-// Services
+// Repositories
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+
+builder.Services.AddScoped<IJobRepository, JobRepository>();
+
+// Services
 builder.Services.AddScoped<EmployeeService>();
+
 builder.Services.AddScoped<AttendanceService>();
+
 builder.Services.AddScoped<PerformanceService>();
+
+builder.Services.AddScoped<JobService>();
 
 // Session
 builder.Services.AddDistributedMemoryCache();
+
 builder.Services.AddSession();
 
 // JWT
 builder.Services.AddAuthentication("JwtAuth")
     .AddJwtBearer("JwtAuth", options =>
     {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = false,
-            ValidateAudience = false,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes("THIS_IS_MY_SECRET_KEY_12345"))
-        };
+        options.TokenValidationParameters =
+            new TokenValidationParameters
+            {
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+
+                IssuerSigningKey =
+                    new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(
+                            "THIS_IS_MY_SECRET_KEY_12345"))
+            };
     });
 
 builder.Services.AddAuthorization();
@@ -64,20 +76,27 @@ var cultures = new[]
     new CultureInfo("bn")
 };
 
-app.UseRequestLocalization(new RequestLocalizationOptions
-{
-    DefaultRequestCulture = new RequestCulture("en"),
-    SupportedCultures = cultures,
-    SupportedUICultures = cultures
-});
+app.UseRequestLocalization(
+    new RequestLocalizationOptions
+    {
+        DefaultRequestCulture =
+            new RequestCulture("en"),
+
+        SupportedCultures = cultures,
+
+        SupportedUICultures = cultures
+    });
 
 // Rotativa
-RotativaConfiguration.Setup(app.Environment.WebRootPath, "Rotativa");
+RotativaConfiguration.Setup(
+    app.Environment.WebRootPath,
+    "Rotativa");
 
 // Middleware
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
+
     app.UseHsts();
 }
 

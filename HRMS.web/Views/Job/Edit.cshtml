@@ -1,0 +1,114 @@
+﻿@model HRMS.Entities.Job
+
+@{
+    ViewData["Title"] = "Edit Job";
+}
+
+<div class="container mt-4">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-warning text-dark">
+            <h4>Edit Job</h4>
+        </div>
+
+        <div class="card-body">
+
+            <form asp-action="Edit" method="post">
+
+                <input type="hidden" asp-for="JobId" />
+
+                <div class="mb-3">
+                    <label asp-for="Title" class="form-label"></label>
+
+                    <input asp-for="Title"
+                           class="form-control" />
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Department"
+                           class="form-label"></label>
+
+                    <input asp-for="Department"
+                           class="form-control" />
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Description"
+                           class="form-label"></label>
+
+                    <textarea asp-for="Description"
+                              class="form-control"
+                              rows="4"></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="ExperienceRequired"
+                           class="form-label"></label>
+
+                    <input asp-for="ExperienceRequired"
+                           class="form-control" />
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="SalaryRange"
+                           class="form-label"></label>
+
+                    <input asp-for="SalaryRange"
+                           class="form-control" />
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Location"
+                           class="form-label"></label>
+
+                    <input asp-for="Location"
+                           class="form-control" />
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="LastDate"
+                           class="form-label"></label>
+
+                    <input asp-for="LastDate"
+                           type="date"
+                           class="form-control" />
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Status"
+                           class="form-label"></label>
+
+                    <select asp-for="Status"
+                            class="form-select">
+
+                        <option value="Open">Open</option>
+
+                        <option value="Closed">Closed</option>
+
+                    </select>
+                </div>
+
+                <button type="submit"
+                        class="btn btn-success">
+                    Update Job
+                </button>
+
+                <a asp-action="Index"
+                       class="btn btn-secondary">
+                    Back
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
