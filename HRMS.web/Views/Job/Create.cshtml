@@ -4,79 +4,236 @@
     ViewData["Title"] = "Create Job";
 }
 
-<div class="container mt-4">
+<div class="container py-5">
 
-    <div class="card shadow">
-        <div class="card-header bg-primary text-white">
-            <h4>Create Job</h4>
+    <div class="row justify-content-center">
+
+        <div class="col-lg-9">
+
+            <div class="card border-0 shadow-lg rounded-4">
+
+                <!-- HEADER -->
+
+                <div class="card-header bg-primary text-white rounded-top-4 py-4">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <div>
+
+                            <h2 class="fw-bold mb-1">
+                                Create New Job
+                            </h2>
+
+                            <p class="mb-0">
+                                Add a new recruitment opening
+                            </p>
+
+                        </div>
+
+                        <span class="badge bg-light text-dark fs-6 px-3 py-2">
+                            HRMS
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <!-- BODY -->
+
+                <div class="card-body p-5">
+
+                    <form asp-action="Create" method="post">
+
+                        <div asp-validation-summary="All"
+                             class="alert alert-danger">
+                        </div>
+
+                        <div class="row">
+
+                            <!-- JOB TITLE -->
+
+                            <div class="col-md-6 mb-4">
+
+                                <label asp-for="Title"
+                                       class="form-label fw-semibold">
+
+                                    Job Title
+
+                                </label>
+
+                                <input asp-for="Title"
+                                       class="form-control form-control-lg"
+                                       placeholder="Enter job title" />
+
+                                <span asp-validation-for="Title"
+                                      class="text-danger">
+                                </span>
+
+                            </div>
+
+                            <!-- DEPARTMENT -->
+
+                            <div class="col-md-6 mb-4">
+
+                                <label asp-for="Department"
+                                       class="form-label fw-semibold">
+
+                                    Department
+
+                                </label>
+
+                                <input asp-for="Department"
+                                       class="form-control form-control-lg"
+                                       placeholder="Enter department" />
+
+                                <span asp-validation-for="Department"
+                                      class="text-danger">
+                                </span>
+
+                            </div>
+
+                            <!-- EXPERIENCE -->
+
+                            <div class="col-md-6 mb-4">
+
+                                <label asp-for="ExperienceRequired"
+                                       class="form-label fw-semibold">
+
+                                    Experience Required
+
+                                </label>
+
+                                <input asp-for="ExperienceRequired"
+                                       class="form-control form-control-lg"
+                                       placeholder="Example: 2+ Years" />
+
+                                <span asp-validation-for="ExperienceRequired"
+                                      class="text-danger">
+                                </span>
+
+                            </div>
+
+                            <!-- SALARY -->
+
+                            <div class="col-md-6 mb-4">
+
+                                <label asp-for="SalaryRange"
+                                       class="form-label fw-semibold">
+
+                                    Salary Range
+
+                                </label>
+
+                                <input asp-for="SalaryRange"
+                                       class="form-control form-control-lg"
+                                       placeholder="Example: 5 LPA - 8 LPA" />
+
+                                <span asp-validation-for="SalaryRange"
+                                      class="text-danger">
+                                </span>
+
+                            </div>
+
+                            <!-- LOCATION -->
+
+                            <div class="col-md-6 mb-4">
+
+                                <label asp-for="Location"
+                                       class="form-label fw-semibold">
+
+                                    Location
+
+                                </label>
+
+                                <input asp-for="Location"
+                                       class="form-control form-control-lg"
+                                       placeholder="Enter location" />
+
+                                <span asp-validation-for="Location"
+                                      class="text-danger">
+                                </span>
+
+                            </div>
+
+                            <!-- LAST DATE -->
+
+                            <div class="col-md-6 mb-4">
+
+                                <label asp-for="LastDate"
+                                       class="form-label fw-semibold">
+
+                                    Last Apply Date
+
+                                </label>
+
+                                <input asp-for="LastDate"
+                                       type="date"
+                                       class="form-control form-control-lg" />
+
+                                <span asp-validation-for="LastDate"
+                                      class="text-danger">
+                                </span>
+
+                            </div>
+
+                            <!-- DESCRIPTION -->
+
+                            <div class="col-md-12 mb-4">
+
+                                <label asp-for="Description"
+                                       class="form-label fw-semibold">
+
+                                    Job Description
+
+                                </label>
+
+                                <textarea asp-for="Description"
+                                          class="form-control"
+                                          rows="6"
+                                          placeholder="Write detailed job description"></textarea>
+
+                                <span asp-validation-for="Description"
+                                      class="text-danger">
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                        <!-- BUTTONS -->
+
+                        <div class="d-flex gap-3 mt-4">
+
+                            <button type="submit"
+                                    class="btn btn-success btn-lg px-5">
+
+                                Save Job
+
+                            </button>
+
+                            <a asp-action="Index"
+                               class="btn btn-secondary btn-lg px-5">
+
+                                Back
+
+                            </a>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
         </div>
 
-        <div class="card-body">
-
-            <form asp-action="Create" method="post">
-
-                <div class="mb-3">
-                    <label asp-for="Title" class="form-label"></label>
-                    <input asp-for="Title" class="form-control" />
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="Department" class="form-label"></label>
-                    <input asp-for="Department" class="form-control" />
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="Description" class="form-label"></label>
-                    <textarea asp-for="Description"
-                              class="form-control"
-                              rows="4"></textarea>
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="ExperienceRequired"
-                           class="form-label"></label>
-
-                    <input asp-for="ExperienceRequired"
-                           class="form-control" />
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="SalaryRange"
-                           class="form-label"></label>
-
-                    <input asp-for="SalaryRange"
-                           class="form-control" />
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="Location"
-                           class="form-label"></label>
-
-                    <input asp-for="Location"
-                           class="form-control" />
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="LastDate"
-                           class="form-label"></label>
-
-                    <input asp-for="LastDate"
-                           type="date"
-                           class="form-control" />
-                </div>
-
-                <button type="submit"
-                        class="btn btn-success">
-                    Save Job
-                </button>
-
-                <a asp-action="Index"
-                       class="btn btn-secondary">
-                    Back
-                </a>
-
-            </form>
-
-        </div>
     </div>
+
 </div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
