@@ -2,6 +2,7 @@
 using HRMS.DAL;
 using HRMS.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace HRMS.web.Controllers
 {
@@ -27,7 +28,7 @@ namespace HRMS.web.Controllers
             var jobs = _service.GetJobs();
             return View(jobs);
         }
-        //------------------------------------ Details Vieew -------------------------------
+        //------------------------------------ Details Vieew ----------------------------
 
         public IActionResult Details(int id)
         {
@@ -160,5 +161,23 @@ namespace HRMS.web.Controllers
         }
 
 
+        // Show All Applied job.
+
+        public IActionResult AppliedJob()
+        {
+            if (!IsAdminLoggedIn())
+            {
+                return RedirectToAction("Login", "Admin");
+            }
+            var appliedJobs = _context.Applications
+            .Include(a => a.Job)
+            .Include(a => a.Candidate)
+            .OrderByDescending(a => a.AppliedDate)
+            .ToList();
+
+        return View(appliedJobs);
     }
+
+
+}
 }

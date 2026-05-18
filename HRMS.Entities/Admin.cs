@@ -13,12 +13,12 @@ namespace HRMS.Entities
 
 
         [Required(ErrorMessage ="Email Id is requied")]
-        public string EmailId { get; set; }
+        public string? EmailId { get; set; }
 
 
 
         [Required(ErrorMessage ="Insert Password")]
-        public string Password { get; set; }
+        public string? Password { get; set; }
     }
 
 }

@@ -11,13 +11,15 @@ namespace HRMS.Entities
         public int JobId { get; set; }
 
         [ForeignKey("JobId")]
-        public Job Job { get; set; }
+        public Job? Job { get; set; }
 
         public int CandidateId { get; set; }
 
         [ForeignKey("CandidateId")]
-        public Candidate Candidate { get; set; }
+        public Candidate? Candidate { get; set; }
 
-        public string Status { get; set; } = "Pending";
+        public string Status { get; set; } = "Applied";
+
+        public DateTime AppliedDate { get; set; } = DateTime.Now;
     }
 }

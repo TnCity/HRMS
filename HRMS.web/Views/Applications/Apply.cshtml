@@ -1,0 +1,175 @@
+﻿@model HRMS.web.Models.ApplicationVM
+
+@{
+    ViewData["Title"] = "Apply Job";
+    var job = ViewData["Job"] as HRMS.Entities.Job;
+}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-8">
+
+            <!-- Job Card -->
+            <div class="card shadow-lg border-0 rounded-4 mb-4 overflow-hidden">
+
+                <div class="bg-primary text-white p-4">
+                    <h2 class="fw-bold mb-1">@job?.Title</h2>
+                    <p class="mb-0">
+                        <i class="bi bi-building"></i>
+                        @job?.Department
+                    </p>
+                </div>
+
+                <div class="card-body p-4">
+
+                    <div class="row mb-4">
+
+                        <div class="col-md-6 mb-3">
+                            <div class="border rounded-3 p-3 bg-light">
+                                <small class="text-muted">Location</small>
+                                <h6 class="mb-0">@job?.Location</h6>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <div class="border rounded-3 p-3 bg-light">
+                                <small class="text-muted">Experience</small>
+                                <h6 class="mb-0">@job?.ExperienceRequired Years</h6>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <div class="border rounded-3 p-3 bg-light">
+                                <small class="text-muted">Salary</small>
+                                <h6 class="mb-0">₹ @job?.SalaryRange</h6>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <div class="border rounded-3 p-3 bg-light">
+                                <small class="text-muted">Last Date</small>
+                                <h6 class="mb-0">
+                                    @job?.LastDate.ToString("dd MMM yyyy")
+                                </h6>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <hr />
+
+                    <h4 class="fw-bold mb-4 text-primary">
+                        Application Form
+                    </h4>
+
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger rounded-3">
+                            <div asp-validation-summary="All"></div>
+                        </div>
+                    }
+
+                    <form asp-action="Apply"
+                          method="post"
+                          enctype="multipart/form-data">
+
+                        <div class="row">
+
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label fw-semibold">
+                                    Full Name
+                                </label>
+
+                                <input asp-for="Name"
+                                       class="form-control form-control-lg rounded-3" />
+
+                                <span asp-validation-for="Name"
+                                      class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label fw-semibold">
+                                    Email Address
+                                </label>
+
+                                <input asp-for="ApplicantEmail"
+                                       class="form-control form-control-lg rounded-3" />
+
+                                <span asp-validation-for="ApplicantEmail"
+                                      class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label fw-semibold">
+                                    Phone Number
+                                </label>
+
+                                <input asp-for="Phone"
+                                       class="form-control form-control-lg rounded-3" />
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label fw-semibold">
+                                    Experience
+                                </label>
+
+                                <input asp-for="Experience"
+                                       class="form-control form-control-lg rounded-3" />
+                            </div>
+
+                            <div class="col-12 mb-4">
+                                <label class="form-label fw-semibold">
+                                    Skills
+                                </label>
+
+                                <input asp-for="Skills"
+                                       class="form-control form-control-lg rounded-3"
+                                       placeholder="ASP.NET Core, SQL, C#, Azure..." />
+                            </div>
+
+                            <div class="col-12 mb-4">
+                                <label class="form-label fw-semibold">
+                                    Upload Resume
+                                </label>
+
+                                <input asp-for="ResumeFile"
+                                       type="file"
+                                       class="form-control form-control-lg rounded-3" />
+                            </div>
+
+                            <div class="col-12 mb-4">
+                                <label class="form-label fw-semibold">
+                                    Cover Letter
+                                </label>
+
+                                <textarea asp-for="CoverLetter"
+                                          rows="5"
+                                          class="form-control rounded-3"
+                                          placeholder="Tell us why you're suitable for this role..."></textarea>
+                            </div>
+
+                        </div>
+
+                        <div class="d-grid mt-3">
+                            <button type="submit"
+                                    class="btn btn-primary btn-lg rounded-3 shadow-sm">
+                                Submit Application
+                            </button>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

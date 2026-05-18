@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace HRMS.Entities
 {
@@ -11,10 +6,24 @@ namespace HRMS.Entities
     {
         [Key]
         public int CandidateId { get; set; }
+
+        [Required]
         public string FullName { get; set; }
+
+        [Required]
+        [EmailAddress]
         public string Email { get; set; }
+
         public string Phone { get; set; }
-        public string ResumePath { get; set; }
+
+        public string? ResumePath { get; set; }
+
+        public string? Skills { get; set; }
+
+        public string Experience { get; set; }
+
+        public DateTime AppliedDate { get; set; } = DateTime.Now;
+
         public ICollection<Application>? Applications { get; set; }
     }
 }
