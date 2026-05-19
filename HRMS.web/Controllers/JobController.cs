@@ -22,6 +22,13 @@ namespace HRMS.web.Controllers
             return HttpContext.Session.GetString("Admin") != null;
         }
 
+
+
+        public IActionResult ManageRecruitment()
+        {
+            return View();
+        }
+
         // ---------------------------------- Show available job -----------------------
         public IActionResult Index()
         {
@@ -127,7 +134,7 @@ namespace HRMS.web.Controllers
 
 
 
-        // --------------------------------delete job-----------------------------
+        // -------------------------------- Delete job-----------------------------
 
 
         public IActionResult Delete(int id)
@@ -175,9 +182,30 @@ namespace HRMS.web.Controllers
             .OrderByDescending(a => a.AppliedDate)
             .ToList();
 
-        return View(appliedJobs);
+            return View(appliedJobs);
+        }
+
+        public IActionResult ApplicationStatus(int id, string status)
+        {
+            if (!IsAdminLoggedIn())
+            {
+                return RedirectToAction("Login", "Admin");
+            }
+            var application = _context.Applications
+                               .FirstOrDefault(a => a.ApplicationId == id);
+
+            if (application == null)
+                return NotFound();
+
+            application.Status = status;
+
+            _context.SaveChanges();
+
+            TempData["Success"] =
+                $"Candidate {status} successfully.";
+
+            return RedirectToAction("AppliedJob");
+
+        }
     }
-
-
-}
 }

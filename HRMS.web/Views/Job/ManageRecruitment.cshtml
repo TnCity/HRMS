@@ -1,0 +1,53 @@
+﻿@{
+    ViewData["Title"] = "Manage Recruitment";
+}
+
+<style>
+    body {
+        background: #cbd5e1;
+    }
+</style>
+
+<div class="container mt-5">
+
+
+    <h2 class="mb-4 text-center">📊 Manage Recruitment</h2>
+    <br />
+
+    <div class="row">
+
+        <!-- Show Available job  -->
+        <div class="col-md-4">
+            <div class="card shadow p-4 text-center">
+                <h4>Available jobs</h4>
+                <p>View all available jobs</p>
+                <a href="/Job/Index" class="btn btn-primary">
+                    Open
+                </a>
+            </div>
+        </div>
+
+        <!-- Applied Job -->
+        <div class="col-md-4">
+            <div class="card shadow p-4 text-center">
+                <h4>Applied Job</h4>
+                <p>View all applied Job</p>
+                <a href="/job/AppliedJob" class="btn btn-success">
+                    Open
+                </a>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow- p-4 text-center">
+                <h4 class="mb-2">Application Status</h4>
+                <p> View status of an Application.</p>
+                <a href="/job/ApplicationStatus" class="btn btn-primary w-100">
+                    Open
+                </a>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>

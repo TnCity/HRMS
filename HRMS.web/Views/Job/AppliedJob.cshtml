@@ -1,138 +1,286 @@
 ﻿@model IEnumerable<HRMS.Entities.Application>
 
-<div class="container mt-5">
+@{
+    ViewData["Title"] = "Applied Jobs";
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold text-primary">
-            Applied Jobs
-        </h2>
+    var total = Model.Count();
+    var selected = Model.Count(x => x.Status == "Selected");
+    var rejected = Model.Count(x => x.Status == "Rejected");
+    var applied = Model.Count(x => x.Status == "Applied");
+}
 
-        <span class="badge bg-dark fs-6">
-            Total Applications : @Model.Count()
-        </span>
+<div class="container-fluid py-4">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-center align-items-center mb-4">
+
+        <div>
+            <h2 class="fw-bold text-primary mb-1">
+                Recruitment Dashboard
+            </h2>
+
+            <p class="text-muted mb-0">
+                Manage candidate applications and recruitment process
+            </p>
+        </div>
+
     </div>
 
-    <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+    <!-- SUMMARY CARDS -->
+    <div class="row g-4 mb-4">
+
+        <div class="col-md-3">
+            <div class="card border-0 shadow rounded-4 bg-primary text-white">
+
+                <div class="card-body">
+
+                    <h6 class="text-uppercase">
+                        Total Applications
+                    </h6>
+
+                    <h2 class="fw-bold">
+                        @total
+                    </h2>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card border-0 shadow rounded-4 bg-success text-white">
+
+                <div class="card-body">
+
+                    <h6 class="text-uppercase">
+                        Selected for Interview
+                    </h6>
+
+                    <h2 class="fw-bold">
+                        @selected
+                    </h2>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card border-0 shadow rounded-4 bg-danger text-white">
+
+                <div class="card-body">
+
+                    <h6 class="text-uppercase">
+                        Rejected
+                    </h6>
+
+                    <h2 class="fw-bold">
+                        @rejected
+                    </h2>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card border-0 shadow rounded-4 bg-dark text-white">
+
+                <div class="card-body">
+
+                    <h6 class="text-uppercase">
+                        Review Pending
+                    </h6>
+
+                    <h2 class="fw-bold">
+                        @applied
+                    </h2>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- TABLE -->
+    <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+
+        <div class="card-header bg-dark text-white py-3">
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <h5 class="mb-0 fw-bold">
+                    Candidate Applications
+                </h5>
+
+                <span class="badge bg-primary fs-6">
+                    @total Records
+                </span>
+
+            </div>
+
+        </div>
 
         <div class="card-body p-0">
 
-            <table class="table table-hover align-middle mb-0">
+            <div class="table-responsive">
 
-                <thead class="table-dark">
-                    <tr>
-                        <th class="ps-4">Candidate</th>
-                        <th>Email</th>
-                        <th>Phone</th>
-                        <th>Job</th>
-                        <th>Status</th>
-                        <th>Applied Date</th>
-                        <th class="text-center">Resume</th>
-                    </tr>
-                </thead>
+                <table class="table table-hover align-middle mb-0">
 
-                <tbody>
+                    <thead class="table-light">
 
-                    @if (Model.Any())
-                    {
-                        @foreach (var item in Model)
+                        <tr>
+                            <th class="ps-4">Candidate</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Job Role</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th class="text-center">Resume</th>
+                            <th class="text-center">Action</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        @if (Model.Any())
+                        {
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+
+                                    <td class="ps-4">
+
+                                        <div class="fw-bold text-dark">
+                                            @item.Candidate.FullName
+                                        </div>
+
+                                    </td>
+
+                                    <td>
+                                        @item.Candidate.Email
+                                    </td>
+
+                                    <td>
+                                        @item.Candidate.Phone
+                                    </td>
+
+                                    <td>
+                                        <span class="fw-semibold">
+                                            @item.Job.Title
+                                        </span>
+                                    </td>
+
+                                    <td>
+
+                                        @if (item.Status == "Applied")
+                                        {
+                                            <span class="badge bg-primary px-3 py-2">
+                                                Pending
+                                            </span>
+                                        }
+                                        else if (item.Status == "Selected")
+                                        {
+                                            <span class="badge bg-success px-3 py-2">
+                                                Selected
+                                            </span>
+                                        }
+                                        else if (item.Status == "Rejected")
+                                        {
+                                            <span class="badge bg-danger px-3 py-2">
+                                                Rejected
+                                            </span>
+                                        }
+
+                                    </td>
+
+                                    <td>
+                                        @item.AppliedDate.ToString("dd MMM yyyy")
+                                    </td>
+
+                                    <td class="text-center">
+
+                                        @if (!string.IsNullOrEmpty(item.Candidate.ResumePath))
+                                        {
+                                            <a href="@item.Candidate.ResumePath"
+                                                   target="_blank"
+                                                   class="btn btn-sm btn-info rounded-pill px-3 me-2">
+                                                View
+                                            </a>
+
+                                            <a href="@item.Candidate.ResumePath"
+                                                   download
+                                                   class="btn btn-sm btn-success rounded-pill px-3">
+                                                Download
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">
+                                                No Resume
+                                            </span>
+                                        }
+
+                                    </td>
+
+                                    <td class="text-center">
+
+                                        @if (item.Status == "Applied")
+                                        {
+                                            <a asp-action="ApplicationStatus"
+                                                   asp-route-id="@item.ApplicationId"
+                                                   asp-route-status="Selected"
+                                                   class="btn btn-success btn-sm rounded-pill px-3 me-2">
+                                                Select
+                                            </a>
+
+                                            <a asp-action="ApplicationStatus"
+                                                   asp-route-id="@item.ApplicationId"
+                                                   asp-route-status="Rejected"
+                                                   class="btn btn-danger btn-sm rounded-pill px-3">
+                                                Reject
+                                            </a>
+                                        }
+                                        else if (item.Status == "Selected")
+                                        {
+                                            <span class="badge bg-success px-3 py-2">
+                                                Candidate Selected
+                                            </span>
+                                        }
+                                        else if (item.Status == "Rejected")
+                                        {
+                                            <span class="badge bg-danger px-3 py-2">
+                                                Candidate Rejected
+                                            </span>
+                                        }
+
+                                    </td>
+
+                                </tr>
+                            }
+                        }
+                        else
                         {
                             <tr>
 
-                                <td class="ps-4 fw-semibold">
-                                    @item.Candidate.FullName
-                                </td>
+                                <td colspan="8" class="text-center py-5">
 
-                                <td>
-                                    @item.Candidate.Email
-                                </td>
-
-                                <td>
-                                    @item.Candidate.Phone
-                                </td>
-
-                                <td>
-                                    <span class="fw-semibold text-dark">
-                                        @item.Job.Title
-                                    </span>
-                                </td>
-
-                                <td>
-                                    @if (item.Status == "Applied")
-                                    {
-                                        <span class="badge bg-primary px-3 py-2">
-                                            @item.Status
-                                        </span>
-                                    }
-                                    else if (item.Status == "Shortlisted")
-                                    {
-                                        <span class="badge bg-success px-3 py-2">
-                                            @item.Status
-                                        </span>
-                                    }
-                                    else if (item.Status == "Rejected")
-                                    {
-                                        <span class="badge bg-danger px-3 py-2">
-                                            @item.Status
-                                        </span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge bg-secondary px-3 py-2">
-                                            @item.Status
-                                        </span>
-                                    }
-                                </td>
-
-                                <td>
-                                    @item.AppliedDate.ToString("dd MMM yyyy")
-                                </td>
-
-                                <td class="text-center">
-
-                                    @if (!string.IsNullOrEmpty(item.Candidate.ResumePath))
-                                    {
-                                        <a href="@item.Candidate.ResumePath"
-                                               target="_blank"
-                                               class="btn btn-sm btn-info me-2">
-                                            <i class="bi bi-eye-fill"></i>
-                                            View
-                                        </a>
-
-                                        <a href="@item.Candidate.ResumePath"
-                                               download
-                                               class="btn btn-sm btn-success">
-                                            <i class="bi bi-download"></i>
-                                            Download
-                                        </a>
-                                    }
-                                    else
-                                    {
-                                        <span class="text-muted">
-                                            No Resume
-                                        </span>
-                                    }
+                                    <h5 class="text-muted">
+                                        No Applications Found
+                                    </h5>
 
                                 </td>
 
                             </tr>
                         }
-                    }
-                    else
-                    {
-                        <tr>
-                            <td colspan="7" class="text-center py-5">
 
-                                <h5 class="text-muted">
-                                    No Applications Found
-                                </h5>
+                    </tbody>
 
-                            </td>
-                        </tr>
-                    }
+                </table>
 
-                </tbody>
-
-            </table>
+            </div>
 
         </div>
 
