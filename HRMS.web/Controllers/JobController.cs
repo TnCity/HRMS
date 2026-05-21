@@ -134,7 +134,7 @@ namespace HRMS.web.Controllers
 
 
 
-        // -------------------------------- Delete job-----------------------------
+        // -------------------------------- Delete job -----------------------------
 
 
         public IActionResult Delete(int id)

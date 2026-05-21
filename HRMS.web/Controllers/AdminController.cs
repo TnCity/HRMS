@@ -155,6 +155,9 @@ namespace HRMS.web.Controllers
             {
                 HttpContext.Session.SetString("Admin", admin.EmailId);
 
+                HttpContext.Session.SetString("Role", admin.Role);
+
+
                 return RedirectToAction("Dashboard");
             }
 

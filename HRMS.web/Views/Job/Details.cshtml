@@ -138,7 +138,18 @@
 
                     <!-- BUTTONS -->
 
+                    @{
+                        var role = Context.Session.GetString("Role");
+
+                        bool isAdmin = !string.IsNullOrEmpty(role) &&
+                            role.Trim().ToLower() == "admin";
+                    }
+
                     <div class="mt-5 d-flex gap-3">
+                        @if(isAdmin)
+                        {
+                            
+                        
 
                         <a asp-action="Edit"
                            asp-route-id="@Model.JobId"
@@ -153,6 +164,12 @@
                            class="btn btn-danger btn-lg px-4">
 
                             Delete
+
+                        </a>
+                        }
+                        <a asp-controller="Applications" asp-action="Apply" asp-route-id="@Model.JobId" class="btn btn-primary btn-lg px-4">
+
+                            Apply for this job
 
                         </a>
 

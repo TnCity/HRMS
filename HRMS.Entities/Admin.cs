@@ -19,6 +19,9 @@ namespace HRMS.Entities
 
         [Required(ErrorMessage ="Insert Password")]
         public string? Password { get; set; }
+
+
+        public string? Role { get; set; }
     }
 
 }
