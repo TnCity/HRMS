@@ -22,7 +22,6 @@ namespace HRMS.web.Models
         [Required]
         public IFormFile? ResumeFile { get; set; }
 
-        
 
         public string? CoverLetter { get; set; }
 

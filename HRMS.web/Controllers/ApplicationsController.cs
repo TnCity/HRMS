@@ -21,9 +21,10 @@ namespace HRMS.web.Controllers
         public IActionResult Apply(int id)
         {
             var job = _context.Jobs.FirstOrDefault(j => j.JobId == id);
-            if (job == null) return NotFound();
+            if (job == null) 
+            return NotFound();
 
-            if (job.LastDate < DateTime.UtcNow)
+            if (job.LastDate < DateTime.Now)
             {
                 TempData["Error"] = "The application period for this job has expired.";
                 return View("Expired", job);
@@ -37,15 +38,15 @@ namespace HRMS.web.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Apply(int id, ApplicationVM model)
         {
-            var job = _context.Jobs.FirstOrDefault(j => j.JobId == id);
+            var job = _context.Jobs
+                .FirstOrDefault(j => j.JobId == id);
 
             if (job == null)
                 return NotFound();
 
             if (job.LastDate < DateTime.UtcNow)
             {
-                ModelState.AddModelError(string.Empty,
-                    "Application has expired.");
+                ModelState.AddModelError(string.Empty, "Application has expired.");
 
                 ViewData["Job"] = job;
 

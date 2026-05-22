@@ -136,7 +136,7 @@
 
                     </div>
 
-                    <!-- BUTTONS -->
+                    <!--------------- REDIRECT BUTTONS ------------>
 
                     @{
                         var role = Context.Session.GetString("Role");
@@ -148,36 +148,25 @@
                     <div class="mt-5 d-flex gap-3">
                         @if(isAdmin)
                         {
-                            
-                        
+                            <a asp-action="Edit"
+                               asp-route-id="@Model.JobId"
+                               class="btn btn-warning btn-lg px-4">
+                                Edit Job
+                            </a>
 
-                        <a asp-action="Edit"
-                           asp-route-id="@Model.JobId"
-                           class="btn btn-warning btn-lg px-4">
-
-                            Edit Job
-
-                        </a>
-
-                        <a asp-action="Delete"
-                           asp-route-id="@Model.JobId"
-                           class="btn btn-danger btn-lg px-4">
-
-                            Delete
-
-                        </a>
+                            <a asp-action="Delete"
+                               asp-route-id="@Model.JobId"
+                               class="btn btn-danger btn-lg px-4">
+                                Delete
+                            </a>
                         }
                         <a asp-controller="Applications" asp-action="Apply" asp-route-id="@Model.JobId" class="btn btn-primary btn-lg px-4">
 
                             Apply for this job
-
                         </a>
-
                         <a asp-action="Index"
                            class="btn btn-secondary btn-lg px-4">
-
                             Back
-
                         </a>
 
                     </div>

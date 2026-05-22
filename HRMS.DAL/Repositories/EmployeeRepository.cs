@@ -47,8 +47,12 @@ namespace HRMS.DAL.Repositories
             {
                 existing.Name = employee.Name;
                 existing.Email = employee.Email;
+                existing.Phone = employee.Phone;
                 existing.DepartmentId = employee.DepartmentId;
                 existing.Salary = employee.Salary;
+                existing.Role = employee.Role;
+                existing.Designation = employee.Designation;
+                existing.Address = employee.Address;
 
                 // Preserve password
                 if (!string.IsNullOrEmpty(employee.Password))
