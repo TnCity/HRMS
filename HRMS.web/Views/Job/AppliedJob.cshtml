@@ -1,120 +1,164 @@
 ﻿@model IEnumerable<HRMS.Entities.Application>
 
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show shadow-sm">
+
+        @TempData["Success"]
+
+        <button type="button"
+                class="btn-close"
+                data-bs-dismiss="alert">
+        </button>
+
+    </div>
+}
+
 @{
     ViewData["Title"] = "Applied Jobs";
 
     var total = Model.Count();
-    var selected = Model.Count(x => x.Status == "Selected");
-    var rejected = Model.Count(x => x.Status == "Rejected");
-    var applied = Model.Count(x => x.Status == "Applied");
+
+    var selected =
+        Model.Count(x => x.Status == "Selected");
+
+    var rejected =
+        Model.Count(x => x.Status == "Rejected");
+
+    var applied =
+        Model.Count(x => x.Status == "Applied");
 }
 
 <div class="container-fluid py-4">
 
     <!-- HEADER -->
-    <div class="d-flex justify-content-center align-items-center mb-4">
 
-        <div>
-            <h2 class="fw-bold text-primary mb-1">
-                Recruitment Dashboard
-            </h2>
+    <div class="text-center mb-5">
 
-            <p class="text-muted mb-0">
-                Manage candidate applications and recruitment process
-            </p>
-        </div>
+        <h2 class="fw-bold text-primary">
+            Recruitment Dashboard
+        </h2>
+
+        <p class="text-secondary mb-0">
+            Manage candidate applications and interview process
+        </p>
 
     </div>
 
     <!-- SUMMARY CARDS -->
+
     <div class="row g-4 mb-4">
 
+        <!-- TOTAL -->
+
         <div class="col-md-3">
-            <div class="card border-0 shadow rounded-4 bg-primary text-white">
+
+            <div class="card border-0 shadow-sm rounded-4 h-100"
+                 style="background: #eef4ff;">
 
                 <div class="card-body">
 
-                    <h6 class="text-uppercase">
+                    <h6 class="text-secondary text-uppercase mb-3">
                         Total Applications
                     </h6>
 
-                    <h2 class="fw-bold">
+                    <h2 class="fw-bold text-primary">
                         @total
                     </h2>
 
                 </div>
 
             </div>
+
         </div>
 
+        <!-- SELECTED -->
+
         <div class="col-md-3">
-            <div class="card border-0 shadow rounded-4 bg-success text-white">
+
+            <div class="card border-0 shadow-sm rounded-4 h-100"
+                 style="background: #eefbf3;">
 
                 <div class="card-body">
 
-                    <h6 class="text-uppercase">
-                        Selected for Interview
+                    <h6 class="text-secondary text-uppercase mb-3">
+                        Selected
                     </h6>
 
-                    <h2 class="fw-bold">
+                    <h2 class="fw-bold text-success">
                         @selected
                     </h2>
 
                 </div>
 
             </div>
+
         </div>
 
+        <!-- REJECTED -->
+
         <div class="col-md-3">
-            <div class="card border-0 shadow rounded-4 bg-danger text-white">
+
+            <div class="card border-0 shadow-sm rounded-4 h-100"
+                 style="background: #fff1f2;">
 
                 <div class="card-body">
 
-                    <h6 class="text-uppercase">
+                    <h6 class="text-secondary text-uppercase mb-3">
                         Rejected
                     </h6>
 
-                    <h2 class="fw-bold">
+                    <h2 class="fw-bold text-danger">
                         @rejected
                     </h2>
 
                 </div>
 
             </div>
+
         </div>
 
+        <!-- PENDING -->
+
         <div class="col-md-3">
-            <div class="card border-0 shadow rounded-4 bg-dark text-white">
+
+            <div class="card border-0 shadow-sm rounded-4 h-100"
+                 style="background: #fff8e8;">
 
                 <div class="card-body">
 
-                    <h6 class="text-uppercase">
+                    <h6 class="text-secondary text-uppercase mb-3">
                         Review Pending
                     </h6>
 
-                    <h2 class="fw-bold">
+                    <h2 class="fw-bold text-warning">
                         @applied
                     </h2>
 
                 </div>
 
             </div>
+
         </div>
 
     </div>
 
-    <!-- TABLE -->
-    <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+    <!-- APPLICATION TABLE -->
 
-        <div class="card-header bg-dark text-white py-3">
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+
+        <!-- CARD HEADER -->
+
+        <div class="card-header border-0 py-3"
+             style="background:#f4f7fb;">
 
             <div class="d-flex justify-content-between align-items-center">
 
-                <h5 class="mb-0 fw-bold">
+                <h5 class="mb-0 fw-semibold text-dark">
                     Candidate Applications
                 </h5>
 
-                <span class="badge bg-primary fs-6">
+                <span class="badge bg-primary px-3 py-2">
                     @total Records
                 </span>
 
@@ -122,23 +166,50 @@
 
         </div>
 
+        <!-- TABLE -->
+
         <div class="card-body p-0">
 
             <div class="table-responsive">
 
                 <table class="table table-hover align-middle mb-0">
 
-                    <thead class="table-light">
+                    <thead style="background:#f8fafc;">
 
                         <tr>
-                            <th class="ps-4">Candidate</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <th>Job Role</th>
-                            <th>Status</th>
-                            <th>Date</th>
-                            <th class="text-center">Resume</th>
-                            <th class="text-center">Action</th>
+
+                            <th class="ps-4">
+                                Candidate
+                            </th>
+
+                            <th>
+                                Email
+                            </th>
+
+                            <th>
+                                Phone
+                            </th>
+
+                            <th>
+                                Job Role
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Date
+                            </th>
+
+                            <th class="text-center">
+                                Resume
+                            </th>
+
+                            <th class="text-center">
+                                Action
+                            </th>
+
                         </tr>
 
                     </thead>
@@ -151,54 +222,78 @@
                             {
                                 <tr>
 
+                                    <!-- Candidate -->
+
                                     <td class="ps-4">
 
-                                        <div class="fw-bold text-dark">
+                                        <span class="fw-semibold text-dark">
                                             @item.Candidate.FullName
-                                        </div>
+                                        </span>
 
                                     </td>
 
-                                    <td>
+                                    <!-- Email -->
+
+                                    <td class="text-secondary">
                                         @item.Candidate.Email
                                     </td>
 
-                                    <td>
+                                    <!-- Phone -->
+
+                                    <td class="text-secondary">
                                         @item.Candidate.Phone
                                     </td>
 
+                                    <!-- Job Role -->
+
                                     <td>
-                                        <span class="fw-semibold">
+
+                                        <span class="fw-semibold text-dark">
                                             @item.Job.Title
                                         </span>
+
                                     </td>
+
+                                    <!-- STATUS -->
 
                                     <td>
 
                                         @if (item.Status == "Applied")
                                         {
-                                            <span class="badge bg-primary px-3 py-2">
+                                            <span class="text-primary fw-semibold">
+
                                                 Pending
+
                                             </span>
                                         }
                                         else if (item.Status == "Selected")
                                         {
-                                            <span class="badge bg-success px-3 py-2">
+                                            <span class="text-success fw-semibold">
+
                                                 Selected
+
                                             </span>
                                         }
                                         else if (item.Status == "Rejected")
                                         {
-                                            <span class="badge bg-danger px-3 py-2">
+                                            <span class="text-danger fw-semibold">
+
                                                 Rejected
+
                                             </span>
                                         }
 
                                     </td>
 
-                                    <td>
+                                    <!-- DATE -->
+
+                                    <td class="text-secondary">
+
                                         @item.AppliedDate.ToString("dd MMM yyyy")
+
                                     </td>
+
+                                    <!-- RESUME -->
 
                                     <td class="text-center">
 
@@ -206,24 +301,32 @@
                                         {
                                             <a href="@item.Candidate.ResumePath"
                                                    target="_blank"
-                                                   class="btn btn-sm btn-info rounded-pill px-3 me-2">
+                                                   class="btn btn-outline-info btn-sm rounded-pill px-3 me-2">
+
                                                 View
+
                                             </a>
 
                                             <a href="@item.Candidate.ResumePath"
                                                    download
-                                                   class="btn btn-sm btn-success rounded-pill px-3">
+                                                   class="btn btn-outline-success btn-sm rounded-pill px-3">
+
                                                 Download
+
                                             </a>
                                         }
                                         else
                                         {
                                             <span class="text-muted">
+
                                                 No Resume
+
                                             </span>
                                         }
 
                                     </td>
+
+                                    <!-- ACTION -->
 
                                     <td class="text-center">
 
@@ -233,27 +336,30 @@
                                                    asp-route-id="@item.ApplicationId"
                                                    asp-route-status="Selected"
                                                    class="btn btn-success btn-sm rounded-pill px-3 me-2">
+
                                                 Select
+
                                             </a>
 
                                             <a asp-action="ApplicationStatus"
                                                    asp-route-id="@item.ApplicationId"
                                                    asp-route-status="Rejected"
                                                    class="btn btn-danger btn-sm rounded-pill px-3">
+
                                                 Reject
+
                                             </a>
                                         }
                                         else if (item.Status == "Selected")
                                         {
-                                            <span class="badge bg-success px-3 py-2">
-                                                Candidate Selected
-                                            </span>
-                                        }
-                                        else if (item.Status == "Rejected")
-                                        {
-                                            <span class="badge bg-danger px-3 py-2">
-                                                Candidate Rejected
-                                            </span>
+                                            <a asp-controller="Interview"
+                                                   asp-action="Create"
+                                                   asp-route-applicationId="@item.ApplicationId"
+                                                   class="btn btn-primary btn-sm rounded-pill px-3">
+
+                                                Schedule Interview
+
+                                            </a>
                                         }
 
                                     </td>
@@ -265,10 +371,13 @@
                         {
                             <tr>
 
-                                <td colspan="8" class="text-center py-5">
+                                <td colspan="8"
+                                    class="text-center py-5">
 
                                     <h5 class="text-muted">
+
                                         No Applications Found
+
                                     </h5>
 
                                 </td>

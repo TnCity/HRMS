@@ -1,0 +1,83 @@
+﻿@model HRMS.Entities.Interview
+
+<div class="container mt-5">
+
+    <div class="card shadow p-4 rounded-4">
+
+        <h3 class="mb-4 text-primary fw-bold">
+            Schedule Interview
+        </h3>
+
+        <form asp-action="Create">
+
+            <input type="hidden"
+                   asp-for="ApplicationId" />
+
+            <!-- Interview Date -->
+
+            <div class="mb-3">
+
+                <label asp-for="InterviewDate"
+                       class="form-label fw-semibold">
+                </label>
+
+                <input asp-for="InterviewDate"
+                       class="form-control"
+                       type="datetime-local"
+                       value="@Model.InterviewDate.ToString("yyyy-MM-ddTHH:mm")" />
+
+            </div>
+
+            <!-- Interview Type -->
+
+            <div class="mb-4">
+
+                <label asp-for="InterviewType"
+                       class="form-label fw-semibold">
+                </label>
+
+                <select asp-for="InterviewType"
+                        class="form-select">
+
+                    <option value="">
+                        -- Select Interview Type --
+                    </option>
+
+                    <option value="Online">
+                        Online
+                    </option>
+
+                    <option value="Offline">
+                        Offline
+                    </option>
+
+                </select>
+
+            </div>
+
+            <!-- BUTTONS -->
+
+            <div class="d-flex gap-2">
+
+                <button type="submit"
+                        class="btn btn-primary">
+
+                    Schedule Interview
+
+                </button>
+
+                <a asp-controller="Job"
+                   asp-action="AppliedJob"
+                   class="btn btn-secondary">
+
+                    Back
+
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>

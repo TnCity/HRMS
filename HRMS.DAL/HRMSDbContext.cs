@@ -36,6 +36,7 @@ namespace HRMS.DAL
         public DbSet<Candidate> Candidates { get; set; }
         public DbSet<Offer> Offers { get; set; }
         public DbSet<Interview> Interviews { get; set; }
+        public DbSet<InterviewResult> InterviewResults { get; set; }
 
 
 

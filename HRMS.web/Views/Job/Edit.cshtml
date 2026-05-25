@@ -14,15 +14,15 @@
 
             <div class="card border-0 shadow-lg rounded-4">
 
-                <div class="card-header bg-warning text-dark rounded-top-4 py-3">
+                <div class="card-header bg-light text-dark rounded-top-4 py-3">
 
-                    <div class="d-flex align-items-center justify-content-between">
+                    <div class="position-relative text-center">
 
                         <h3 class="mb-0 fw-bold">
-                            Edit Job
+                             Edit Job Details
                         </h3>
 
-                        <span class="badge bg-dark fs-6">
+                        <span class="badge bg-dark fs-6 position-absolute top-50 end-0 translate-middle-y">
                             Job ID: @Model.JobId
                         </span>
 
@@ -36,9 +36,7 @@
 
                         <input type="hidden" asp-for="JobId" />
 
-                        <div asp-validation-summary="All"
-                             class="alert alert-danger">
-                        </div>
+                        
 
                         <!-- JOB TITLE -->
 
@@ -49,15 +47,9 @@
                                 Job Title
                             </label>
 
-                            <select asp-for="Title"
-                                    class="form-select form-select-lg"
-                                    asp-items="@(new SelectList(ViewBag.Jobs, "Title", "Title"))">
-
-                                <option value="">
-                                    -- Select Job Title --
-                                </option>
-
-                            </select>
+                            <input asp-for="Title"
+                                    class="form-control form-control-lg"
+                                    placeholder="Enter job title" />
 
                             <span asp-validation-for="Title"
                                   class="text-danger">

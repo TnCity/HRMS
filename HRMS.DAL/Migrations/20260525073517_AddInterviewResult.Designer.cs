@@ -4,6 +4,7 @@ using HRMS.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HRMS.DAL.Migrations
 {
     [DbContext(typeof(HRMSDbContext))]
-    partial class HRMSDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260525073517_AddInterviewResult")]
+    partial class AddInterviewResult
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -335,30 +338,6 @@ namespace HRMS.DAL.Migrations
                     b.HasIndex("ApplicationId");
 
                     b.ToTable("Interviews");
-                });
-
-            modelBuilder.Entity("HRMS.Entities.InterviewResult", b =>
-                {
-                    b.Property<int>("InterviewResultId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("InterviewResultId"));
-
-                    b.Property<string>("Feedback")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("InterviewId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Result")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("InterviewResultId");
-
-                    b.HasIndex("InterviewId");
-
-                    b.ToTable("InterviewResults");
                 });
 
             modelBuilder.Entity("HRMS.Entities.Job", b =>
@@ -735,17 +714,6 @@ namespace HRMS.DAL.Migrations
                         .IsRequired();
 
                     b.Navigation("Application");
-                });
-
-            modelBuilder.Entity("HRMS.Entities.InterviewResult", b =>
-                {
-                    b.HasOne("HRMS.Entities.Interview", "Interview")
-                        .WithMany()
-                        .HasForeignKey("InterviewId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Interview");
                 });
 
             modelBuilder.Entity("HRMS.Entities.LeaveRequest", b =>

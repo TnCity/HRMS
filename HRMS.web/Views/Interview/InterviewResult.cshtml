@@ -1,0 +1,88 @@
+﻿@model HRMS.Entities.InterviewResult
+
+<div class="container mt-5">
+
+    <div class="card shadow p-4 rounded-4">
+
+        <h3 class="mb-4 text-primary fw-bold">
+            Interview Result
+        </h3>
+
+        <form asp-action="InterviewResult">
+
+            <input type="hidden"
+                   asp-for="InterviewId" />
+
+            <!-- FEEDBACK -->
+
+            <div class="mb-3">
+
+                <label asp-for="Feedback"
+                       class="form-label fw-semibold">
+                </label>
+
+                <textarea asp-for="Feedback"
+                          class="form-control"
+                          rows="5"
+                          placeholder="Enter interview feedback">
+                </textarea>
+
+            </div>
+
+            <!-- RESULT -->
+
+            <div class="mb-4">
+
+                <label asp-for="Result"
+                       class="form-label fw-semibold">
+                </label>
+
+                <select asp-for="Result"
+                        class="form-select">
+
+                    <option value="">
+                        -- Select Result --
+                    </option>
+
+                    <option value="Selected">
+                        Selected
+                    </option>
+
+                    <option value="Rejected">
+                        Rejected
+                    </option>
+
+                    <option value="On Hold">
+                        On Hold
+                    </option>
+
+                </select>
+
+            </div>
+
+            <!-- BUTTONS -->
+
+            <div class="d-flex gap-2">
+
+                <button type="submit"
+                        class="btn btn-success">
+
+                    Save Result
+
+                </button>
+
+                <a asp-controller="Job"
+                   asp-action="AppliedJob"
+                   class="btn btn-secondary">
+
+                    Back
+
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>

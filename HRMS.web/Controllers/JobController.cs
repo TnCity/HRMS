@@ -22,7 +22,7 @@ namespace HRMS.web.Controllers
             return HttpContext.Session.GetString("Admin") != null;
         }
 
-
+        //----------------------------------
 
         public IActionResult ManageRecruitment()
         {
@@ -35,7 +35,7 @@ namespace HRMS.web.Controllers
             var jobs = _service.GetJobs();
             return View(jobs);
         }
-        //------------------------------------ Details Vieew ----------------------------
+        //------------------------------------ Details View ----------------------------
 
         public IActionResult Details(int id)
         {
@@ -107,7 +107,7 @@ namespace HRMS.web.Controllers
                 return NotFound();
             }
 
-            ViewBag.Jobs = _service.GetJobs();
+            //ViewBag.Jobs = _service.GetJobs();
 
             return View(job);
         }
