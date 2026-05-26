@@ -21,7 +21,8 @@ namespace HRMS.Entities
         public string Status { get; set; } = "Applied";
 
         public DateTime AppliedDate { get; set; } = DateTime.Now;
+        public string? FinalResult { get; set; }
 
-       
+
     }
 }

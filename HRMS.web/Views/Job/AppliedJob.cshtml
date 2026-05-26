@@ -177,6 +177,7 @@
                     <thead style="background:#f8fafc;">
 
                         <tr>
+                            <th>Candidate Id</th>
 
                             <th class="ps-4">
                                 Candidate
@@ -195,19 +196,25 @@
                             </th>
 
                             <th>
-                                Status
+                                CV ShortListing Status
                             </th>
 
+                            
+
                             <th>
-                                Date
+                               Apply Date
                             </th>
 
                             <th class="text-center">
-                                Resume
+                                Resume/CV
                             </th>
 
                             <th class="text-center">
                                 Action
+                            </th>
+
+                            <th>
+                                Final Result
                             </th>
 
                         </tr>
@@ -223,7 +230,9 @@
                                 <tr>
 
                                     <!-- Candidate -->
-
+                                    <td>
+                                        @item.Candidate.CandidateId
+                                    </td>
                                     <td class="ps-4">
 
                                         <span class="fw-semibold text-dark">
@@ -284,6 +293,8 @@
                                         }
 
                                     </td>
+
+                                    
 
                                     <!-- DATE -->
 
@@ -363,6 +374,36 @@
                                         }
 
                                     </td>
+                                    <!-- FINAL RESULT -->
+
+                                    <td>
+
+                                        @if (item.Status == "Selected")
+                                        {
+                                            <span class="text-success fw-semibold">
+
+                                                Selected
+
+                                            </span>
+                                        }
+                                        else if (item.Status == "Rejected")
+                                        {
+                                            <span class="text-danger fw-semibold">
+
+                                                Rejected
+
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-secondary fw-semibold">
+
+                                                Pending
+
+                                            </span>
+                                        }
+
+                                    </td>
 
                                 </tr>
                             }
@@ -371,7 +412,7 @@
                         {
                             <tr>
 
-                                <td colspan="8"
+                                <td colspan="9"
                                     class="text-center py-5">
 
                                     <h5 class="text-muted">

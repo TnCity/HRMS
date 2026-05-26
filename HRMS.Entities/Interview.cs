@@ -17,5 +17,6 @@ namespace HRMS.Entities
         public DateTime InterviewDate { get; set; }
 
         public string? InterviewType { get; set; }
+        public InterviewResult? InterviewResult { get; set; }
     }
 }

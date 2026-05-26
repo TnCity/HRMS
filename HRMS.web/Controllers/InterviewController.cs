@@ -1,4 +1,7 @@
-﻿using HRMS.DAL;
+﻿using System.Configuration;
+using System.Net;
+using System.Net.Mail;
+using HRMS.DAL;
 using HRMS.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -8,10 +11,12 @@ namespace HRMS.web.Controllers
     public class InterviewController : Controller
     {
         private readonly HRMSDbContext _context;
+        private readonly IConfiguration _configuration;
 
-        public InterviewController(HRMSDbContext context)
+        public InterviewController(HRMSDbContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
         }
 
         // ================= CHECK ADMIN LOGIN =================
@@ -50,19 +55,89 @@ namespace HRMS.web.Controllers
 
             _context.SaveChanges();
 
-            TempData["Success"] =
-                "Interview scheduled successfully.";
+            // ================= SEND EMAIL =================
 
-            return RedirectToAction(
-                "AppliedJob",
-                "Job");
+            var application = _context.Applications
+                .Include(a => a.Candidate)
+                .FirstOrDefault(a =>
+                    a.ApplicationId == model.ApplicationId);
+
+            if (application != null)
+            {
+                try
+                {
+                    var email =
+                        _configuration["EmailSettings:Email"];
+
+                    var password =
+                        _configuration["EmailSettings:Password"];
+
+                    var host =
+                        _configuration["EmailSettings:Host"];
+
+                    var port =
+                        int.Parse(
+                            _configuration["EmailSettings:Port"]);
+
+                    MailMessage mail = new MailMessage();
+
+                    mail.From =
+                        new MailAddress(email);
+
+                    mail.To.Add(application.Candidate.Email);
+
+                    mail.Subject =
+                        "Interview Schedule At ABC Pvt Ltd Company";
+
+                    mail.Body =
+                    $@"Dear {application.Candidate.FullName},
+
+                    Your interview has been scheduled successfully.
+
+                    Interview Details:
+
+                    Date:
+                    {model.InterviewDate:dd MMM yyyy hh:mm tt}
+
+                    Type:
+                    {model.InterviewType}
+
+                    Please be available on time.
+
+                    Regards,
+                    HR Team";
+
+                    mail.IsBodyHtml = false;
+
+                    SmtpClient smtp =
+                        new SmtpClient(host, port);
+
+                    smtp.Credentials =
+                        new NetworkCredential(
+                            email,
+                            password);
+
+                    smtp.EnableSsl = true;
+
+                    smtp.Send(mail);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+
+            TempData["Success"] =
+                "Interview scheduled and email sent successfully.";
+
+            return RedirectToAction("AppliedJob","Job");
         }
 
         // ================= INTERVIEW RESULT =================
 
         [HttpGet]
         public IActionResult InterviewResult(int id)
-        {
+         {
             if (!IsAdminLoggedIn())
             {
                 return RedirectToAction("Login", "Admin");
@@ -104,7 +179,7 @@ namespace HRMS.web.Controllers
 
                 if (application != null)
                 {
-                    application.Status = model.Result;
+                    application.FinalResult = model.Result;
                 }
             }
 
@@ -126,12 +201,12 @@ namespace HRMS.web.Controllers
                 return RedirectToAction("Login", "Admin");
             }
 
-            var interviews = _context.InterviewResults
-                .Include(r => r.Interview)
-                .ThenInclude(i => i.Application)
-                .ThenInclude(a => a.Candidate)
-                .Include(r => r.Interview.Application.Job)
-                .ToList();
+            var interviews = _context.Interviews
+       .Include(i => i.Application)
+       .ThenInclude(a => a.Candidate)
+       .Include(i => i.Application.Job)
+       .Include(i => i.InterviewResult)
+       .ToList();
 
             return View(interviews);
         }

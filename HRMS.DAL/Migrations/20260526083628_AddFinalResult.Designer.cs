@@ -4,6 +4,7 @@ using HRMS.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HRMS.DAL.Migrations
 {
     [DbContext(typeof(HRMSDbContext))]
-    partial class HRMSDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260526083628_AddFinalResult")]
+    partial class AddFinalResult
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -359,8 +362,7 @@ namespace HRMS.DAL.Migrations
 
                     b.HasKey("InterviewResultId");
 
-                    b.HasIndex("InterviewId")
-                        .IsUnique();
+                    b.HasIndex("InterviewId");
 
                     b.ToTable("InterviewResults");
                 });
@@ -744,8 +746,8 @@ namespace HRMS.DAL.Migrations
             modelBuilder.Entity("HRMS.Entities.InterviewResult", b =>
                 {
                     b.HasOne("HRMS.Entities.Interview", "Interview")
-                        .WithOne("InterviewResult")
-                        .HasForeignKey("HRMS.Entities.InterviewResult", "InterviewId")
+                        .WithMany()
+                        .HasForeignKey("InterviewId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -837,11 +839,6 @@ namespace HRMS.DAL.Migrations
             modelBuilder.Entity("HRMS.Entities.Department", b =>
                 {
                     b.Navigation("Employees");
-                });
-
-            modelBuilder.Entity("HRMS.Entities.Interview", b =>
-                {
-                    b.Navigation("InterviewResult");
                 });
 
             modelBuilder.Entity("HRMS.Entities.Job", b =>
