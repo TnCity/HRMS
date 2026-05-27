@@ -149,16 +149,15 @@
 
         <!-- CARD HEADER -->
 
-        <div class="card-header border-0 py-3"
-             style="background:#f4f7fb;">
+        <div class="card-header border-0 py-3" style="background:#f4f7fb;">
 
-            <div class="d-flex justify-content-between align-items-center">
+            <div class="position-relative text-center">
 
-                <h5 class="mb-0 fw-semibold text-dark">
+                <h5 class="mb-0 fw-semibold text-primary">
                     Candidate Applications
                 </h5>
 
-                <span class="badge bg-primary px-3 py-2">
+                <span class="badge bg-primary px-3 py-2 position-absolute top-50 end-0 translate-middle-y">
                     @total Records
                 </span>
 
@@ -180,15 +179,15 @@
                             <th>Candidate Id</th>
 
                             <th class="ps-4">
-                                Candidate
+                                Candidate Name
                             </th>
 
                             <th>
-                                Email
+                                Candidate  Email
                             </th>
 
                             <th>
-                                Phone
+                                Candidate  Phone
                             </th>
 
                             <th>
@@ -231,7 +230,7 @@
 
                                     <!-- Candidate -->
                                     <td>
-                                        @item.Candidate.CandidateId
+                                        #@item.Candidate.CandidateId
                                     </td>
                                     <td class="ps-4">
 
@@ -361,6 +360,17 @@
 
                                             </a>
                                         }
+                                        else if (item.FinalResult == "Selected")
+                                        {
+                                            <a asp-controller="Interview"
+                                                   asp-action="Generateoffer"
+                                                   asp-route-applicationId="@item.ApplicationId"
+                                                   class="btn btn-primary btn-sm rounded-pill px-3">
+
+                                                Generate Offer
+
+                                            </a>
+                                        }
                                         else if (item.Status == "Selected")
                                         {
                                             <a asp-controller="Interview"
@@ -378,11 +388,19 @@
 
                                     <td>
 
-                                        @if (item.Status == "Selected")
+                                        @if (item.FinalResult == "Selected")
                                         {
                                             <span class="text-success fw-semibold">
 
                                                 Selected
+
+                                            </span>
+                                        }
+                                        else if (item.FinalResult == "Rejected")
+                                        {
+                                            <span class="text-danger fw-semibold">
+
+                                                Rejected
 
                                             </span>
                                         }
@@ -391,6 +409,14 @@
                                             <span class="text-danger fw-semibold">
 
                                                 Rejected
+
+                                            </span>
+                                        }
+                                        else if (item.FinalResult == "On Hold")
+                                        {
+                                            <span class="text-success fw-semibold">
+
+                                                On Hold
 
                                             </span>
                                         }

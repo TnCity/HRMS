@@ -16,7 +16,7 @@ namespace HRMS.Entities
         public int ApplicationId { get; set; }
 
         [ForeignKey("ApplicationId")]
-        public Application Application { get; set; }
+        public Application? Application { get; set; }
 
         public DateTime OfferDate { get; set; }
 
@@ -24,6 +24,6 @@ namespace HRMS.Entities
 
         public decimal Salary { get; set; }
 
-        public string OfferStatus { get; set; }
+        public string? OfferStatus { get; set; }
     }
 }

@@ -1,0 +1,192 @@
+﻿@model HRMS.Entities.Offer
+
+<div class="container mt-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-7">
+
+            <div class="card border-0 shadow rounded-4">
+
+                <!-- HEADER -->
+
+                <div class="card-header bg-success text-white text-center py-3 rounded-top-4">
+
+                    <h3 class="mb-0 fw-bold">
+                        Generate Offer Letter
+                    </h3>
+
+                    <small>
+                        Create and manage candidate offer details
+                    </small>
+
+                </div>
+
+                <!-- BODY -->
+
+                <div class="card-body p-4">
+
+                    <form asp-action="GenerateOffer" method="post">
+
+                        <input type="hidden" asp-for="ApplicationId" />
+
+                        <div asp-validation-summary="All"
+                             class="text-danger mb-3">
+                        </div>
+
+                        <!-- Candidate -->
+
+                        <div class="mb-3">
+
+                            <label class="form-label fw-semibold">
+                                Candidate Name
+                            </label>
+
+                            <input type="text"
+                                   class="form-control rounded-3"
+                                   value="@ViewBag.Candidate"
+                                   readonly />
+
+                        </div>
+
+                        <!-- Job Role -->
+
+                        <div class="mb-3">
+
+                            <label class="form-label fw-semibold">
+                                Job Role
+                            </label>
+
+                            <input type="text"
+                                   class="form-control rounded-3"
+                                   value="@ViewBag.Job"
+                                   readonly />
+
+                        </div>
+
+                        <!-- Offer Date -->
+
+                        <div class="mb-3">
+
+                            <label asp-for="OfferDate"
+                                   class="form-label fw-semibold">
+                                Offer Date
+                            </label>
+
+                            <input asp-for="OfferDate"
+                                   type="date"
+                                   class="form-control rounded-3" />
+
+                            <span asp-validation-for="OfferDate"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+                        <!-- Joining Date -->
+
+                        <div class="mb-3">
+
+                            <label asp-for="JoiningDate"
+                                   class="form-label fw-semibold">
+                                Joining Date
+                            </label>
+
+                            <input asp-for="JoiningDate"
+                                   type="date"
+                                   class="form-control rounded-3" />
+
+                            <span asp-validation-for="JoiningDate"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+                        <!-- Salary -->
+
+                        <div class="mb-3">
+
+                            <label asp-for="Salary"
+                                   class="form-label fw-semibold">
+                                Salary Package
+                            </label>
+
+                            <input asp-for="Salary"
+                                   class="form-control rounded-3"
+                                   placeholder="Enter salary amount" />
+
+                            <span asp-validation-for="Salary"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+                        <!-- Offer Status -->
+
+                        <div class="mb-4">
+
+                            <label asp-for="OfferStatus"
+                                   class="form-label fw-semibold">
+                                Offer Status
+                            </label>
+
+                            <select asp-for="OfferStatus"
+                                    class="form-select rounded-3">
+
+                                <option value="Pending">
+                                    Pending
+                                </option>
+
+                                <option value="Accepted">
+                                    Accepted
+                                </option>
+
+                                <option value="Rejected">
+                                    Rejected
+                                </option>
+
+                            </select>
+
+                            <span asp-validation-for="OfferStatus"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+                        <!-- BUTTONS -->
+
+                        <div class="d-flex justify-content-end gap-2">
+
+                            <a asp-controller="Job"
+                                   asp-action="AppliedJob"
+                                   class="btn btn-outline-secondary rounded-pill px-4">
+
+                                Cancel
+
+                            </a>
+
+                            <button type="submit"
+                                    class="btn btn-success rounded-pill px-4">
+
+                                Generate Offer
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+}

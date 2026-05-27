@@ -1,22 +1,21 @@
-﻿
-
-
-@model IEnumerable<HRMS.Entities.Interview>
+﻿@model IEnumerable<HRMS.Entities.Interview>
 
 <div class="container mt-4">
 
-    <div class="card shadow border-0 rounded-4">
+    <div class="card border-0 shadow-sm rounded-4">
 
-        <div class="card-header bg-primary text-white">
+        <!-- HEADER -->
+
+        <div class="card-header bg-primary text-white rounded-top-4 py-3">
 
             <div class="position-relative text-center">
 
-                <h4 class="mb-0">
+                <h4 class="fw-bold mb-0">
                     Interview Status
                 </h4>
 
                 <span class="badge bg-light text-dark
-                    position-absolute top-50 end-0 translate-middle-y">
+                    position-absolute top-50 end-0 translate-middle-y px-3 py-2">
 
                     @Model.Count() Records
 
@@ -25,6 +24,8 @@
             </div>
 
         </div>
+
+        <!-- TABLE -->
 
         <div class="card-body p-0">
 
@@ -40,9 +41,9 @@
                             <th>Candidate</th>
                             <th>Job Role</th>
                             <th>Date</th>
-                            <th>Type</th>
-                            <th>Status</th>
-                            <th>Action</th>
+                            <th>Interview Type</th>
+                            <th>Final Status</th>
+                            <th class="text-center">Action</th>
 
                         </tr>
 
@@ -54,56 +55,70 @@
                         {
                             <tr>
 
-                                <td>
+                                <!-- Candidate ID -->
+
+                                <td class="fw-semibold text-dark">
                                     #@item.Application.Candidate.CandidateId
                                 </td>
+
+                                <!-- Candidate Name -->
 
                                 <td>
                                     @item.Application.Candidate.FullName
                                 </td>
 
+                                <!-- Job -->
+
                                 <td>
                                     @item.Application.Job.Title
                                 </td>
+
+                                <!-- Date -->
 
                                 <td>
                                     @item.InterviewDate.ToString("dd MMM yyyy")
                                 </td>
 
+                                <!-- Interview Type -->
+
                                 <td>
                                     @item.InterviewType
                                 </td>
 
+                                <!-- FINAL RESULT -->
+
                                 <td>
 
-                                    @if (item.InterviewResult == null)
+                                    @if (item.Application.FinalResult == "Selected")
                                     {
-                                        <span class="badge bg-warning text-dark">
-                                            Pending
+                                        <span class="badge bg-success px-3 py-2">
+                                            Selected
                                         </span>
                                     }
-                                    else if (item.InterviewResult.Result == "Selected")
+                                    else if (item.Application.FinalResult == "Rejected")
                                     {
-                                        <span class="badge bg-success">
-                                            Selected
+                                        <span class="badge bg-danger px-3 py-2">
+                                            Rejected
                                         </span>
                                     }
                                     else
                                     {
-                                        <span class="badge bg-danger">
-                                            Rejected
+                                        <span class="badge bg-warning text-dark px-3 py-2">
+                                            Pending
                                         </span>
                                     }
 
                                 </td>
 
-                                <td>
+                                <!-- ACTION -->
 
-                                    @if (item.InterviewResult == null)
+                                <td class="text-center">
+
+                                    @if (string.IsNullOrEmpty(item.Application.FinalResult))
                                     {
                                         <a asp-action="InterviewResult"
                                                asp-route-id="@item.InterviewId"
-                                               class="btn btn-primary btn-sm">
+                                               class="btn btn-primary btn-sm rounded-pill px-3">
 
                                             Add Decision
 
@@ -112,7 +127,9 @@
                                     else
                                     {
                                         <span class="text-success fw-semibold">
+
                                             Submitted
+
                                         </span>
                                     }
 

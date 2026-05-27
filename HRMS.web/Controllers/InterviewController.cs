@@ -133,7 +133,7 @@ namespace HRMS.web.Controllers
             return RedirectToAction("AppliedJob","Job");
         }
 
-        // ================= INTERVIEW RESULT =================
+        // ================================== INTERVIEW RESULT ===================================================
 
         [HttpGet]
         public IActionResult InterviewResult(int id)
@@ -202,13 +202,82 @@ namespace HRMS.web.Controllers
             }
 
             var interviews = _context.Interviews
-       .Include(i => i.Application)
-       .ThenInclude(a => a.Candidate)
-       .Include(i => i.Application.Job)
-       .Include(i => i.InterviewResult)
-       .ToList();
+                .Include(i => i.Application)
+                .ThenInclude(a => a.Candidate)
+                .Include(i => i.Application.Job)
+                .ToList();
 
             return View(interviews);
+        }
+
+        //--------------------------Generate offer Letter-----------------------------------------
+
+
+        [HttpGet]
+        public IActionResult GenerateOffer(int applicationId)
+        {
+            if (!IsAdminLoggedIn())
+            {
+                return RedirectToAction("Login", "Admin");
+            }
+
+            var application = _context.Applications
+                .Include(a => a.Candidate)
+                .Include(a => a.Job)
+                .FirstOrDefault(a => a.ApplicationId == applicationId);
+
+            if (application == null)
+            {
+                return NotFound();
+            }
+
+            Offer offer = new Offer()
+            {
+                ApplicationId = application.ApplicationId,
+                OfferDate = DateTime.Now,
+                JoiningDate = DateTime.Now.AddDays(15),
+                Salary = 0,
+                OfferStatus = "Pending"
+            };
+
+            ViewBag.Candidate =
+                application.Candidate?.FullName;
+
+            ViewBag.Job =
+                application.Job?.Title;
+
+            return View(offer);
+        }
+
+        [HttpPost]
+        public IActionResult GenerateOffer(Offer model)
+        {
+            if (!ModelState.IsValid)
+            {
+                var application = _context.Applications
+                    .Include(a => a.Candidate)
+                    .Include(a => a.Job)
+                    .FirstOrDefault(a => a.ApplicationId == model.ApplicationId);
+
+                ViewBag.Candidate =
+                    application?.Candidate?.FullName;
+
+                ViewBag.Job =
+                    application?.Job?.Title;
+
+                return View(model);
+            }
+
+            _context.Offers.Add(model);
+
+            _context.SaveChanges();
+
+            TempData["Success"] =
+                "Offer letter generated successfully.";
+
+            return RedirectToAction(
+                "AppliedJob",
+                "Job");
         }
     }
 }
