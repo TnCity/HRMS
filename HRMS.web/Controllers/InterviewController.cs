@@ -231,6 +231,8 @@ namespace HRMS.web.Controllers
                 return NotFound();
             }
 
+            
+
             Offer offer = new Offer()
             {
                 ApplicationId = application.ApplicationId,
@@ -240,11 +242,9 @@ namespace HRMS.web.Controllers
                 OfferStatus = "Pending"
             };
 
-            ViewBag.Candidate =
-                application.Candidate?.FullName;
+            ViewBag.Candidate = application.Candidate?.FullName;
 
-            ViewBag.Job =
-                application.Job?.Title;
+            ViewBag.Job = application.Job?.Title;
 
             return View(offer);
         }
@@ -275,9 +275,7 @@ namespace HRMS.web.Controllers
             TempData["Success"] =
                 "Offer letter generated successfully.";
 
-            return RedirectToAction(
-                "AppliedJob",
-                "Job");
+            return RedirectToAction("AppliedJob", "Job");
         }
     }
 }
